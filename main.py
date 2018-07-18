@@ -3,7 +3,7 @@ import scipy.misc
 import numpy as np
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_image
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images
 
 import tensorflow as tf
 
