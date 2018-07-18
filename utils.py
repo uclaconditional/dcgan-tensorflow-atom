@@ -183,13 +183,13 @@ def generate_random_images(sess, dcgan, config, num_images):
       if idx + 1 > num_images:
         return
       # print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
-      z[idx] = values[kdx]
+      z[idx % config.batch_size] = values[kdx]
       samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
       # print("MEEE samples shape: " + str(samples.shape))
 
       path = './samples/RandGen_{}_{:05d}.png'.format(time_stamp , idx)
       # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-      scipy.misc.imsave(path, samples[idx, :, :, :])
+      scipy.misc.imsave(path, samples[idx % config.batch_size, :, :, :])
       idx += 1
 
 def visualize(sess, dcgan, config, option):
