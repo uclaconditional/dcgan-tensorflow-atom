@@ -173,6 +173,7 @@ def make_gif(images, fname, duration=2, true_image=False):
 def generate_random_images(sess, dcgan, config, num_images):
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
+  time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
   while 1:
     if idx + 1 > num_images:
@@ -187,7 +188,7 @@ def generate_random_images(sess, dcgan, config, num_images):
       samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
       # print("MEEE samples shape: " + str(samples.shape))
 
-      path = './samples/RandGen_{}_{:05d}.png'.format(strftime("%Y%m%d-%H%M%S", gmtime()) , idx)
+      path = './samples/RandGen_{}_{:05d}.png'.format(time_stamp , idx)
       # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
       scipy.misc.imsave(path, samples[idx, :, :, :])
       idx += 1
