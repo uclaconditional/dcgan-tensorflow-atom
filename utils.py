@@ -43,6 +43,7 @@ def merge_images(images, size):
 
 def merge(images, size):
   h, w = images.shape[1], images.shape[2]
+  print("MEEE in merge, images shape: " + str(images.shape))
   if (images.shape[3] in (3,4)):
     c = images.shape[3]
     img = np.zeros((h * size[0], w * size[1], c))
