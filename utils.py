@@ -170,6 +170,8 @@ def make_gif(images, fname, duration=2, true_image=False):
   clip.write_gif(fname, fps = len(images) / duration)
 
 def generate_random_image(sess, dcgan, config):
+  image_frame_dim = int(math.ceil(config.batch_size**.5))
+  print("MEEE image_frame_dim: " + str(image_frame_dim))
   values = np.arange(0, 1, 1./config.batch_size)
   z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
   print("MEEE z_sample shape: " + str(z_sample.shape))
@@ -179,7 +181,7 @@ def generate_random_image(sess, dcgan, config):
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
     print("MEEE samples shape: " + str(samples.shape))
 
-  save_images(samples[0, :, :, :], [image_frame_dim, image_frame_dim], './samples/test_single%s.png' % (0))
+  save_images(samples[0, :, :, :], [64, 64], './samples/test_single%s.png' % (0))
 
 def visualize(sess, dcgan, config, option):
   image_frame_dim = int(math.ceil(config.batch_size**.5))
