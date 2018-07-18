@@ -170,21 +170,27 @@ def make_gif(images, fname, duration=2, true_image=False):
   clip = mpy.VideoClip(make_frame, duration=duration)
   clip.write_gif(fname, fps = len(images) / duration)
 
-def generate_random_image(sess, dcgan, config):
-  image_frame_dim = int(math.ceil(config.batch_size**.5))
-  print("MEEE image_frame_dim: " + str(image_frame_dim))
-  values = np.arange(0, 1, 1./config.batch_size)
-  z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-  print("MEEE z_sample shape: " + str(z_sample.shape))
-  for kdx, z in enumerate(z_sample):
-    print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
-    z[0] = values[kdx]
-    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
-    print("MEEE samples shape: " + str(samples.shape))
+def generate_random_images(sess, dcgan, config, num_images):
+  # print("MEEE image_frame_dim: " + str(image_frame_dim))
+  idx = 0
 
-  path = './samples/test_single%s.png' % (0)
-  # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-  scipy.misc.imsave(path, samples[0, :, :, :])
+  for num_pass in range(num_images/config.batch_size):
+    if idx + 1 > num_images:
+      return
+
+    values = np.arange(0, 1, 1./config.batch_size)
+    z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
+    # print("MEEE z_sample shape: " + str(z_sample.shape))
+    for kdx, z in enumerate(z_sample):
+      # print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
+      z[idx] = values[kdx]
+      samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+      # print("MEEE samples shape: " + str(samples.shape))
+
+      path = './samples/RandGen_%s_%s.png' % strftime("%Y-%m-%d-%H-%M-%S", gmtime()) % (idx)
+      # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
+      scipy.misc.imsave(path, samples[idx, :, :, :])
+      idx += 1
 
 def visualize(sess, dcgan, config, option):
   image_frame_dim = int(math.ceil(config.batch_size**.5))
