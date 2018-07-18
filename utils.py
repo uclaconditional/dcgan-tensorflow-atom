@@ -182,7 +182,8 @@ def generate_random_image(sess, dcgan, config):
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
     print("MEEE samples shape: " + str(samples.shape))
 
-  save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
+  # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
+  scipy.misc.imsave(path, samples[0, :, :, :])
 
 def visualize(sess, dcgan, config, option):
   image_frame_dim = int(math.ceil(config.batch_size**.5))
