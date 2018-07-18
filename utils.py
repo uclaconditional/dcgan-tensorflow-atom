@@ -190,7 +190,7 @@ def generate_random_images(sess, dcgan, config, num_images):
       for n in range(config.batch_size):
         path = './samples/RandGen_{}_{:05d}.png'.format(time_stamp , idx)
         # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-        scipy.misc.imsave(path, samples[idx, :, :, :])
+        scipy.misc.imsave(path, samples[n, :, :, :])
         idx += 1
 
 def visualize(sess, dcgan, config, option):
