@@ -174,7 +174,7 @@ def generate_random_images(sess, dcgan, config, num_images):
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
 
-  for num_pass in range(num_images/config.batch_size):
+  while 1:
     if idx + 1 > num_images:
       return
 
