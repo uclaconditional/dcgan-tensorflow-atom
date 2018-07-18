@@ -170,6 +170,44 @@ def make_gif(images, fname, duration=2, true_image=False):
   clip = mpy.VideoClip(make_frame, duration=duration)
   clip.write_gif(fname, fps = len(images) / duration)
 
+def encode(sess, dcgan, config):
+  idx = 354
+  batch_files = self.data[idx*config.batch_size:(idx+1)*config.batch_size]
+  batch = [
+    get_image(batch_file,
+      input_height=self.input_height,
+      input_width=self.input_width,
+      resize_height=self.output_height,
+      resize_width=self.output_width,
+      crop=self.crop,
+      grayscale=self.grayscale) for batch_file in batch_files]
+  if self.grayscale:
+    batch_images = np.array(batch).astype(np.float32)[:, :, :, None]
+  else:
+    batch_images = np.array(batch).astype(np.float32)
+
+  batch_z = np.random.uniform(-1, 1, [config.batch_size, self.z_dim]) \
+          .astype(np.float32)
+
+  encoded = sess.run(dcgan.D, feed_dict={dcgan.inputs: batch_images})
+
+  print("MEEE Encode encoded shape: " + str(encoded.shape))
+
+      # sample_files = dcgan.data[0:dcgan.sample_num]
+      # sample = [
+      #     get_image(sample_file,
+      #               input_height=dcgan.input_height,
+      #               input_width=dcgan.input_width,
+      #               resize_height=dcgan.output_height,
+      #               resize_width=dcgan.output_width,
+      #               crop=dcgan.crop,
+      #               grayscale=dcgan.grayscale) for sample_file in sample_files]
+      # if (dcgan.grayscale):
+      #   sample_inputs = np.array(sample).astype(np.float32)[:, :, :, None]
+      # else:
+      #   sample_inputs = np.array(sample).astype(np.float32)
+
+
 def generate_random_images(sess, dcgan, config, num_images):
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
