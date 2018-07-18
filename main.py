@@ -3,7 +3,7 @@ import scipy.misc
 import numpy as np
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables
+from utils import pp, visualize, to_json, show_all_variables, generate_random_image
 
 import tensorflow as tf
 
@@ -88,6 +88,7 @@ def main(_):
       if not dcgan.load(FLAGS.checkpoint_dir)[0]:
         raise Exception("[!] Train a model first, then run test mode")
       # Generate
+      generate_random_image()
 
 
     # to_json("./web/js/layers.js", [dcgan.h0_w, dcgan.h0_b, dcgan.g_bn0],
@@ -97,9 +98,9 @@ def main(_):
     #                 [dcgan.h4_w, dcgan.h4_b, None])
 
     # Below is codes for visualization
-    OPTION = 0
-    # OPTION = 1
-    visualize(sess, dcgan, FLAGS, OPTION)
+    # OPTION = 0
+    OPTION = 1
+    # visualize(sess, dcgan, FLAGS, OPTION)
 
 if __name__ == '__main__':
   tf.app.run()
