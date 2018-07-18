@@ -172,21 +172,21 @@ def make_gif(images, fname, duration=2, true_image=False):
 
 def encode(sess, dcgan, config):
   idx = 354
-  batch_files = self.data[idx*config.batch_size:(idx+1)*config.batch_size]
+  batch_files = dcgan.data[idx*config.batch_size:(idx+1)*config.batch_size]
   batch = [
     get_image(batch_file,
-      input_height=self.input_height,
-      input_width=self.input_width,
-      resize_height=self.output_height,
-      resize_width=self.output_width,
-      crop=self.crop,
-      grayscale=self.grayscale) for batch_file in batch_files]
-  if self.grayscale:
+      input_height=dcgan.input_height,
+      input_width=dcgan.input_width,
+      resize_height=dcgan.output_height,
+      resize_width=dcgan.output_width,
+      crop=dcgan.crop,
+      grayscale=dcgan.grayscale) for batch_file in batch_files]
+  if dcgan.grayscale:
     batch_images = np.array(batch).astype(np.float32)[:, :, :, None]
   else:
     batch_images = np.array(batch).astype(np.float32)
 
-  batch_z = np.random.uniform(-1, 1, [config.batch_size, self.z_dim]) \
+  batch_z = np.random.uniform(-1, 1, [config.batch_size, dcgan.z_dim]) \
           .astype(np.float32)
 
   encoded = sess.run(dcgan.D, feed_dict={dcgan.inputs: batch_images})
