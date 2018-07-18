@@ -169,7 +169,7 @@ def make_gif(images, fname, duration=2, true_image=False):
   clip = mpy.VideoClip(make_frame, duration=duration)
   clip.write_gif(fname, fps = len(images) / duration)
 
-def generate_random_image():
+def generate_random_image(sess, dcgan, config):
   values = np.arange(0, 1, 1./config.batch_size)
   z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
   print("MEEE z_sample shape: " + str(z_sample.shape))
