@@ -216,14 +216,14 @@ def generate_random_images(sess, dcgan, config, num_images):
   while 1:
     values = np.arange(0, 1, 1./config.batch_size)
     z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-    # print("MEEE z_sample shape: " + str(z_sample.shape))
+    print("MEEE z_sample shape: " + str(z_sample.shape))
     for kdx, z in enumerate(z_sample):
       if idx + 1 > num_images:
         return
-      # print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
+      print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
       z[idx % config.batch_size] = values[kdx]
       samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
-      # print("MEEE samples shape: " + str(samples.shape))
+      print("MEEE samples shape: " + str(samples.shape))
 
       for n in range(config.batch_size):
         path = './samples/RandGen_{}_{:05d}.png'.format(time_stamp , idx)
