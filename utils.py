@@ -221,14 +221,15 @@ def generate_random_images(sess, dcgan, config, num_images):
     z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
     print("MEEE z_sample shape: " + str(z_sample.shape))
     for kdx, z in enumerate(z_sample):
-      if idx + 1 > num_images:
-        return
       print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
       z[idx % config.batch_size] = values[kdx]
       samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
       print("MEEE samples shape: " + str(samples.shape))
 
       for n in range(config.batch_size):
+        if idx + 1 > num_images:
+          return
+          
         save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
         img_path = './samples/' + save_name + '.png'
         json_path = './samples/' + save_name + '.json'
