@@ -11,6 +11,9 @@ import numpy as np
 from time import gmtime, strftime
 from six.moves import xrange
 
+# MEEE
+import json
+
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 
@@ -226,9 +229,15 @@ def generate_random_images(sess, dcgan, config, num_images):
       print("MEEE samples shape: " + str(samples.shape))
 
       for n in range(config.batch_size):
-        path = './samples/RandGen_{}_{:05d}.png'.format(time_stamp , idx)
+        save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
+        img_path = './samples/' + save_name + '.png'
+        json_path = './samples/' + save_name + '.json'
         # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-        scipy.misc.imsave(path, samples[n, :, :, :])
+        scipy.misc.imsave(img_path, samples[n, :, :, :])
+        rand_seed = z_sample[n, :].tolist()
+        # Save seed into json
+        with open(json_path, 'w') as outfile:
+          json.dump(rand_seed, outfile)
         idx += 1
 
 def visualize(sess, dcgan, config, option):

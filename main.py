@@ -88,7 +88,7 @@ def main(_):
       if not dcgan.load(FLAGS.checkpoint_dir)[0]:
         raise Exception("[!] Train a model first, then run test mode")
       # Generate
-      generate_random_images(sess, dcgan, FLAGS, 24*60*2)
+      generate_random_images(sess, dcgan, FLAGS, 3)
       # encode(sess, dcgan, FLAGS)
 
 
