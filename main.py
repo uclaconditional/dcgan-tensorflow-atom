@@ -28,7 +28,7 @@ flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothin
 flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate during test. [100]")
 # MEEE custom flags
 flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
-flags.DEFINE_string("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
+flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
 flags.DEFINE_integer("walk_num", 24, "Number of frames of walk in latent space.")
 FLAGS = flags.FLAGS
 
