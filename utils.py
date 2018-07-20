@@ -312,7 +312,8 @@ def walk_seed(seed):
         print("MEEE random cell: " + str(random_cell))
         cell = seed[idx] + random_cell
         print("MEEE updated cell: " + str(cell))
-        cell = np.clip(-1.0, 1.0, cell)
+        # cell = np.clip(-1.0, 1.0, cell)
+        cell = max(min(cell, 1.0), -1.0)
         print("MEEE after clip: " + str(cell))
         result_seed.append(cell)
     np_result_seed = np.asarray(result_seed, dtype=np.float32)
