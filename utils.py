@@ -258,7 +258,7 @@ def generate_image_from_seed(sess, dcgan, config):
         return
     z_sample_list = []
     for i in range(config.batch_size):
-        z_sample.append(seed)
+        z_sample_list.append(seed)
 
     z_sample = np.asarray(z_sample_list, dtype=np.float32)
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
