@@ -333,10 +333,10 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
         while batch_idx < config.batch_size:
             for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
                 slerped_z = slerp(ratio, z1, z2)
-                print("MEEE z1: " + str(z1.shape) + " z2: " + str(z2.shape))
+                # print("MEEE z1: " + str(z1.shape) + " z2: " + str(z2.shape))
                 # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
                 batch_seeds[i] = slerped_z
-                print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
+                # print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
                 batch_idx += 1
 
                 # if batch_idx >= config.batch_size:
@@ -345,7 +345,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
             rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
             z1 = z2
             z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
-            print("MEEE newly gen uniform: " + str(z2.shape))
+            # print("MEEE newly gen uniform: " + str(z2.shape))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
@@ -354,6 +354,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
             save_name = 'ContInterp_{}_{:05d}'.format(time_stamp , stored_images)
             img_path = './samples/' + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
             if stored_images >= total_frame_num:
                 return
