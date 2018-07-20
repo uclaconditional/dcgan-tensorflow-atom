@@ -247,7 +247,7 @@ def generate_image_from_seed(sess, dcgan, config):
     if json_path:
         with open(json_path, 'r') as f:
             seed = json.load(f)
-        print("MEEE seed read: " + seed)
+        print("MEEE seed read: " + str(seed))
     else:
         print("MEEE WARNING: Input seed path is None.")
 
