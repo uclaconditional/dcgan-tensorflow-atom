@@ -274,7 +274,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     json_path = config.input_seed_path
     json_file_name = json_path.split("/")[-1]
     json_file_name = json_file_name.split(".")[0]
-    seed = []
+    seed = [] # Will be reassigned before use
     if json_path:
         with open(json_path, 'r') as f:
             seed = json.load(f)
@@ -297,7 +297,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
 
     walked = 0
     max_vector_length = 0.1
-    vector = np.random.uniform(-max_vector_length, max_vector_length, size=(config.batch_size , dcgan.z_dim))
+    vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
     while walked < walk_num:
         z_sample_list = []
         for i in range(config.batch_size):
