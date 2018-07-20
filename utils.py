@@ -356,8 +356,8 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
-            if stored_images >= total_frame_num:
-                return
+            # if stored_images >= total_frame_num:
+            #     return
 
 
 def slerp(val, low, high):
