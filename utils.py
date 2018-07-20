@@ -314,19 +314,19 @@ def walk_seed(seed):
     result_seed = []
     for idx in range(len(seed)):
         random_cell = random.uniform(-maxWalkStep, maxWalkStep)
-        print("MEEE random cell: " + str(random_cell))
+        # print("MEEE random cell: " + str(random_cell))
         if idx == 0:
             cell = seed[idx] + random_cell
         else:
             cell = seed[idx]
-        print("MEEE updated cell: " + str(cell))
+        # print("MEEE updated cell: " + str(cell))
         # cell = np.clip(-1.0, 1.0, cell)
         cell = max(min(cell, 1.0), -1.0)
-        print("MEEE after clip: " + str(cell))
+        # print("MEEE after clip: " + str(cell))
         result_seed.append(cell)
     np_result_seed = np.asarray(result_seed, dtype=np.float32)
     np_seed = np.asarray(seed, dtype=np.float32)
-    print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
+    # print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
 def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
