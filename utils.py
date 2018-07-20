@@ -302,8 +302,6 @@ def generate_walk_in_latent_space(sess, dcgan, config):
             if walked >= walk_num:
                 return
 
-
-
 # Walk a single step for all 100 numbers in a seed
 def walk_seed(seed):
     maxWalkStep = 0.03 # PARAM
@@ -321,6 +319,49 @@ def walk_seed(seed):
     np_seed = np.asarray(seed, dtype=np.float32)
     print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
+
+def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
+    steps_per_interp = 16   # PARAM
+    stored_images = 0
+    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
+    z1 = rand_batch_z[0, :, :, :]
+    z2 = rand_batch_z[1, :, :, :]
+    while stored_images < total_frame_num:
+        batch_idx = 0
+        batch_seeds = []
+        while batch_idx < config.batch_size:
+            for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
+                slerped_z = slerp(ratio, z1, z2)
+                batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
+                batch_idx += 1
+
+                # if batch_idx >= config.batch_size:
+                #     break
+
+            rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
+            z1 = z2
+            z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))
+
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+
+        # Naming
+        for i in range(config.batch_size):
+            save_name = 'ContInterp_{}_{:05d}'.format(time_stamp , stored_images)
+            img_path = './samples/' + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            stored_images += 1
+            if stored_images >= total_frame_num:
+                return
+
+
+def slerp(val, low, high):
+    """Code from https://github.com/soumith/dcgan.torch/issues/14"""
+    omega = np.arccos(np.clip(np.dot(low/np.linalg.norm(low), high/np.linalg.norm(high)), -1, 1))
+    so = np.sin(omega)
+    if so == 0:
+        return (1.0-val) * low + val * high # L'Hopital's rule/LERP
+    return np.sin((1.0-val)*omega) / so * low + np.sin(val*omega) / so * high
 
 
 
