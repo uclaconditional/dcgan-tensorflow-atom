@@ -282,12 +282,17 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
         return
-    # Save random state to json file to recreate later
-    walk_rand_state = random.getstate()
-    rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
-    with open(rand_state_json_path, 'w') as outfile:
-      json.dump(walk_rand_state, outfile)
-      print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
+
+    if walk_rand_seed == None:
+        rand_seed = random.randint(0, 10000)
+    else:
+        rand_seed = walk_rand_seed
+    random.seed(rand_seed)
+
+    # rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
+    # with open(rand_state_json_path, 'w') as outfile:
+    #   json.dump(walk_rand_state, outfile)
+    #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
     while walked < walk_num:
@@ -300,7 +305,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
 
         for i in range(config.batch_size):
-            save_name = 'Walk_{}_{:05d}'.format(time_stamp , walked)
+            save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
             img_path = './samples/' + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
