@@ -243,6 +243,11 @@ def generate_random_images(sess, dcgan, config, num_images):
 
 def generate_image_from_seed(sess, dcgan, config):
     json_path = config.input_seed_path
+    print("MEEE json_path: " + json_path)
+    json_file_name = json_path.split("/")[-1]
+    print("MEEE json_file_name: " + json_file_name)
+    json_file_name = json_file_name.split(".")[0]
+    print("MEEE just name: " + json_file_name)
     seed = []
     if json_path:
         with open(json_path, 'r') as f:
@@ -250,6 +255,17 @@ def generate_image_from_seed(sess, dcgan, config):
         print("MEEE seed read: " + str(seed))
     else:
         print("MEEE WARNING: Input seed path is None.")
+        return
+    z_sample_list = []
+    for i in range(config.batch_size):
+        z_sample.append(seed)
+
+    z_sample = np.asarray(z_sample_list, dtype=np.float32)
+    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+    save_name = 'GenFrom_{}'.format(json_file_name)
+    img_path = './samples/' + save_name + '.png'
+    # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
+    scipy.misc.imsave(img_path, samples[n, :, :, :])
 
 
 def visualize(sess, dcgan, config, option):
