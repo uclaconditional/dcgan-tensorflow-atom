@@ -13,9 +13,12 @@ from six.moves import xrange
 
 # MEEE
 import json
+from colorama import init, Fore, Back, Style
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+
+init(autoreset=True)
 
 pp = pprint.PrettyPrinter()
 
@@ -254,7 +257,7 @@ def generate_image_from_seed(sess, dcgan, config):
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
-        print("MEEE WARNING: Input seed path is None.")
+        print(Fore.RED + "MEEE WARNING: Input seed path is None.")
         return
     z_sample_list = []
     for i in range(config.batch_size):
@@ -265,7 +268,8 @@ def generate_image_from_seed(sess, dcgan, config):
     save_name = 'GenFrom_{}'.format(json_file_name)
     img_path = './samples/' + save_name + '.png'
     # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-    scipy.misc.imsave(img_path, samples[n, :, :, :])
+    scipy.misc.imsave(img_path, samples[0, :, :, :])
+    print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
 
 def visualize(sess, dcgan, config, option):
