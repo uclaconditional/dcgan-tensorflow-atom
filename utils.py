@@ -287,7 +287,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
     with open(rand_state_json_path, 'w') as outfile:
       json.dump(walk_rand_state, outfile)
-      print(Fore.SYAN + "MEEE saved rand state json: " + rand_state_json_path)
+      print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
     while walked < walk_num:
