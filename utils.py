@@ -296,7 +296,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
-    max_vector_length = 0.1
+    max_vector_length = 0.03 # PARAM
     vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
     while walked < walk_num:
         z_sample_list = []
