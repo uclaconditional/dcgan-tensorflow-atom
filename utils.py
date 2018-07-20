@@ -344,7 +344,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
 
             rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
             z1 = z2
-            z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))
+            z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
             print("MEEE newly gen uniform: " + str(z2.shape))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
