@@ -346,7 +346,8 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
             z1 = z2
             z2 = np.asarray(rand_batch_z[0, :])
             # z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
-            print("MEEE newly gen uniform: " + str(z2))
+            print("MEEE newly assigned z1: " + str(z1))
+            print("MEEE newly gen uniform z2: " + str(z2))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
