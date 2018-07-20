@@ -306,7 +306,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
 
 # Walk a single step for all 100 numbers in a seed
 def walk_seed(seed):
-    maxWalkStep = 0.08 # PARAM
+    maxWalkStep = 0.03 # PARAM
     result_seed = []
     for idx in range(len(seed)):
         random_cell = random.uniform(-maxWalkStep, maxWalkStep)
