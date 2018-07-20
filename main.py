@@ -28,6 +28,7 @@ flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothin
 flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate during test. [100]")
 # MEEE custom flags
 flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
+flags.DEFINE_integer("walk_num", 24, "Number of frames of walk in latent space.")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -92,7 +93,7 @@ def main(_):
       # Generate
       # generate_random_images(sess, dcgan, FLAGS, 3)
       # generate_image_from_seed(sess, dcgan, FLAGS)
-      generate_walk_in_latent_space(sess, dcgan, FLAGS, 5)
+      generate_walk_in_latent_space(sess, dcgan, FLAGS)
       # encode(sess, dcgan, FLAGS)
 
 
