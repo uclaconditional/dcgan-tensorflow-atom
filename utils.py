@@ -282,6 +282,12 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
         return
+    # Save random state to json file to recreate later
+    walk_rand_state = random.getstate()
+    rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
+    with open(rand_state_json_path, 'w') as outfile:
+      json.dump(walk_rand_state, outfile)
+      print(Fore.SYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
     while walked < walk_num:
