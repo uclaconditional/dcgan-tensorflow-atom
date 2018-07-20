@@ -308,8 +308,12 @@ def walk_seed(seed):
     maxWalkStep = 0.08 # PARAM
     result_seed = []
     for idx in range(len(seed)):
-        cell = seed[idx] + random.uniform(-maxWalkStep, maxWalkStep)
+        random_cell = random.uniform(-maxWalkStep, maxWalkStep)
+        print("MEEE random cell: " + str(random_cell))
+        cell = seed[idx] + random_cell
+        print("MEEE updated cell: " + cell)
         cell = np.clip(-1.0, 1.0, cell)
+        print("MEEE after clip: " + cell)
         result_seed.append(cell)
     np_result_seed = np.asarray(result_seed, dtype=np.float32)
     np_seed = np.asarray(seed, dtype=np.float32)
