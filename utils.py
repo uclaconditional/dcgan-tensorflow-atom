@@ -269,7 +269,7 @@ def generate_image_from_seed(sess, dcgan, config):
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
 def generate_walk_in_latent_space(sess, dcgan, config):
-    walk_num = FLAGS.walk_num
+    walk_num = config.walk_num
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
     json_file_name = json_path.split("/")[-1]
