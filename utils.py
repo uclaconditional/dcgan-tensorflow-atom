@@ -311,6 +311,7 @@ def walk_seed(seed):
         cell = seed[idx] + random.uniform(-maxWalkStep, maxWalkStep)
         cell = np.clip(-1.0, 1.0, cell)
         result_seed.append(cell)
+    print("MEEE walk seed diff: " + str(result_seed - seed))
     return result_seed
 
 
