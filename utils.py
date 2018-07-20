@@ -283,10 +283,10 @@ def generate_walk_in_latent_space(sess, dcgan, config):
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
         return
 
-    if walk_rand_seed == None:
+    if config.walk_rand_seed == None:
         rand_seed = random.randint(0, 10000)
     else:
-        rand_seed = walk_rand_seed
+        rand_seed = config.walk_rand_seed
     random.seed(rand_seed)
 
     # rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
