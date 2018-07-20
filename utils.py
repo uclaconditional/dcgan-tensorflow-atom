@@ -287,6 +287,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
         rand_seed = random.randint(0, 10000)
     else:
         rand_seed = config.walk_rand_seed
+    print(Fore.RED + "MEEE rand seed + 1: " + str(rand_seed + 1))
     random.seed(rand_seed)
 
     # rand_state_json_path = './samples/Walk_{}_randState.json'.format(time_stamp)
