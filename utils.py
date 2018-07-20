@@ -311,7 +311,9 @@ def walk_seed(seed):
         cell = seed[idx] + random.uniform(-maxWalkStep, maxWalkStep)
         cell = np.clip(-1.0, 1.0, cell)
         result_seed.append(cell)
-    print("MEEE walk seed diff: " + str(result_seed - seed))
+    np_result_seed = np.asarray(result_seed, dtype=np.float32)
+    np_seed = np.asarray(seed, dtype=np.float32)
+    print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
 
