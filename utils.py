@@ -360,6 +360,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
 
 def slerp(val, low, high):
     """Code from https://github.com/soumith/dcgan.torch/issues/14"""
+    print("MEEE slepr low: " + str(low.shape) + ", high: " + str(high))
     omega = np.arccos(np.clip(np.dot(low/np.linalg.norm(low), high/np.linalg.norm(high)), -1, 1))
     so = np.sin(omega)
     if so == 0:
