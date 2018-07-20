@@ -325,8 +325,8 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
     stored_images = 0
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
-    z1 = rand_batch_z[0, :, :, :]
-    z2 = rand_batch_z[1, :, :, :]
+    z1 = rand_batch_z[0, :]
+    z2 = rand_batch_z[1, :]
     while stored_images < total_frame_num:
         batch_idx = 0
         batch_seeds = []
