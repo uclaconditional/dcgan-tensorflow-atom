@@ -296,11 +296,14 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
+    max_vector_length = 0.1
+    vector = np.random.uniform(-max_vector_length, max_vector_length, size=(config.batch_size , dcgan.z_dim))
     while walked < walk_num:
         z_sample_list = []
         for i in range(config.batch_size):
             z_sample_list.append(seed)
-            seed = walk_seed(seed)
+            # seed = walk_seed(seed)
+            seed, vector = vector_walk_seed(seed, vector)
         # Generate batch images
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
@@ -313,6 +316,21 @@ def generate_walk_in_latent_space(sess, dcgan, config):
             walked += 1
             if walked >= walk_num:
                 return
+
+# Walk with a vector
+def vector_walk_seed(seed, vector):
+    maxVectorWalkStep = 0.0035 # PARAM
+    result_vector = []
+    result_seed = []
+    for idx in range(len(seed)):
+        vectorWalkStep = random.uniform(-maxVectorWalkStep, maxVectorWalkStep)
+        vector_cell = vector[idx] + vectorWalkStep
+        result_vector.append(vector_cell)
+        cell = max(min(cell, 1.0), -1.0)
+        cell = seed[idx] + vector_cell
+        result_seed.append(cell)
+
+    return result_seed, result_vector
 
 # Walk a single step for all 100 numbers in a seed
 def walk_seed(seed):
