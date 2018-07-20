@@ -246,11 +246,8 @@ def generate_random_images(sess, dcgan, config, num_images):
 
 def generate_image_from_seed(sess, dcgan, config):
     json_path = config.input_seed_path
-    print("MEEE json_path: " + json_path)
     json_file_name = json_path.split("/")[-1]
-    print("MEEE json_file_name: " + json_file_name)
     json_file_name = json_file_name.split(".")[0]
-    print("MEEE just name: " + json_file_name)
     seed = []
     if json_path:
         with open(json_path, 'r') as f:
@@ -270,6 +267,52 @@ def generate_image_from_seed(sess, dcgan, config):
     # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
+
+def generate_walk_in_latent_space(sess, dcgan, config, walk_num):
+    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    json_path = config.input_seed_path
+    json_file_name = json_path.split("/")[-1]
+    json_file_name = json_file_name.split(".")[0]
+    seed = []
+    if json_path:
+        with open(json_path, 'r') as f:
+            seed = json.load(f)
+        print("MEEE seed read: " + str(seed))
+    else:
+        print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+        return
+
+    walked = 0
+    while walked < walk_num:
+        z_sample_list = []
+        for i in range(config.batch_size):
+            z_sample_list.append(seed)
+            seed = walk_seed(seed)
+        # Generate batch images
+        z_sample = np.asarray(z_sample_list, dtype=np.float32)
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+
+        for i in range(config.batch_size):
+            save_name = 'Walk_{}_{:05d}'.format(time_stamp , walked)
+            img_path = './samples/' + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "MEEE walk image generated: " + img_path)
+            walked += 1
+            if walked >= walk_num:
+                return
+
+
+
+# Walk a single step for all 100 numbers in a seed
+def walk_seed(seed):
+    maxWalkStep = 0.08 # PARAM
+    result_seed = []
+    for idx in range(len(seed)):
+        cell = seed[idx] + random.uniform(-maxWalkStep, maxWalkStep)
+        cell = np.clip(-1.0, 1.0, cell)
+        result_seed.append(cell)
+    return result_seed
+
 
 
 def visualize(sess, dcgan, config, option):
