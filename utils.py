@@ -229,7 +229,7 @@ def generate_random_images(sess, dcgan, config, num_images):
       for n in range(config.batch_size):
         if idx + 1 > num_images:
           return
-          
+
         save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
         img_path = './samples/' + save_name + '.png'
         json_path = './samples/' + save_name + '.json'
@@ -240,6 +240,17 @@ def generate_random_images(sess, dcgan, config, num_images):
         with open(json_path, 'w') as outfile:
           json.dump(rand_seed, outfile)
         idx += 1
+
+def generate_image_from_seed(sess, dcgan, config):
+    json_path = config.input_seed_path
+    seed = []
+    if json_path:
+        with open(json_path, 'r') as f:
+            seed = json.load(f)
+        print("MEEE seed read: " + seed)
+    else:
+        print("MEEE WARNING: Input seed path is None.")
+
 
 def visualize(sess, dcgan, config, option):
   image_frame_dim = int(math.ceil(config.batch_size**.5))

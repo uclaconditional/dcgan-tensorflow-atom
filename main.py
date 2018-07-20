@@ -26,6 +26,8 @@ flags.DEFINE_boolean("train", False, "True for training, False for testing [Fals
 flags.DEFINE_boolean("crop", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
 flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate during test. [100]")
+# MEEE custom flags
+flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -88,7 +90,8 @@ def main(_):
       if not dcgan.load(FLAGS.checkpoint_dir)[0]:
         raise Exception("[!] Train a model first, then run test mode")
       # Generate
-      generate_random_images(sess, dcgan, FLAGS, 3)
+      # generate_random_images(sess, dcgan, FLAGS, 3)
+      generate_image_from_seed(sess, dcgan, FLAGS)
       # encode(sess, dcgan, FLAGS)
 
 
