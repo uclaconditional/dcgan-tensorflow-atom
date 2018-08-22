@@ -366,6 +366,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
                 slerped_z = slerp(ratio, z1, z2)
                 print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
                 # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
+                print("MEEE batch_idx: " + str(batch_idx))
                 batch_seeds[batch_idx] = slerped_z
                 print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
                 batch_idx += 1
