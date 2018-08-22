@@ -296,7 +296,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
     #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
-    max_vector_length = 0.015 # PARAM
+    max_vector_length = 0.005 # PARAM
     vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
     while walked < walk_num:
         z_sample_list = []
@@ -319,7 +319,7 @@ def generate_walk_in_latent_space(sess, dcgan, config):
 
 # Walk with a vector
 def vector_walk_seed(seed, vector):
-    maxVectorWalkStep = 0.0025 # PARAM
+    maxVectorWalkStep = 0.0005 # PARAM
     result_vector = []
     result_seed = []
     for idx in range(len(seed)):
@@ -327,8 +327,8 @@ def vector_walk_seed(seed, vector):
         vector_cell = vector[idx] + vectorWalkStep
         result_vector.append(vector_cell)
         cell = seed[idx] + vector_cell
-        # cell = max(min(cell, 1.0), -1.0)
-        if cell > 1:
+        # cell = max(min(cell, 1.0), -1.0) # Clamp mode
+        if cell > 1: # Wrap mode
           print("MEEE vector walk cell before: " + str(cell))
           cell = -1 + (cell - 1)
           print("MEEE vector walk cell after: " + str(cell))
