@@ -360,7 +360,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
     z2 = np.asarray(rand_batch_z[1, :])
     while stored_images < total_frame_num:
         batch_idx = 0
-        batch_seeds = np.zeros(shape=(64, 100))
+        batch_seeds = np.zeros(shape=(config.batch_size, 100))
         while batch_idx < config.batch_size:
             for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
                 slerped_z = slerp(ratio, z1, z2)
