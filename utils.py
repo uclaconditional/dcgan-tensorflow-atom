@@ -371,8 +371,6 @@ def walk_seed(seed):
     # print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
-def walk_reverse_clamp(seed, vector
-
 def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_cut, is_rand_steps_per_interp):
     steps_per_interp = 32 # 16   # PARAM
     stored_images = 0
