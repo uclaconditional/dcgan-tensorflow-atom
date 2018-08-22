@@ -354,6 +354,7 @@ def walk_seed(seed):
 def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
     steps_per_interp = 32 # 16   # PARAM
     stored_images = 0
+    num_queued_images = 0
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     z1 = np.asarray(rand_batch_z[0, :])
@@ -361,26 +362,34 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
     while stored_images < total_frame_num:
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100))
+
         while batch_idx < config.batch_size:
-            for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
-                slerped_z = slerp(ratio, z1, z2)
-                print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
-                # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
-                print("MEEE batch_idx: " + str(batch_idx))
-                batch_seeds[batch_idx] = slerped_z
-                print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
-                batch_idx += 1
+            print("interp_idx: " + str(interp_idx))
+            interp_idx = num_queued_images % steps_per_interp
+            # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
+            i, ratio = enumerate(np.linspace(0, 1, steps_per_interp))[interp_idx]
+            print("i: " + str(i) + " ratio: " + str(ratio))
+            
+            slerped_z = slerp(ratio, z1, z2)
+            # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
+            # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
+            print("MEEE batch_idx: " + str(batch_idx))
+            batch_seeds[batch_idx] = slerped_z
+            # print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
+            batch_idx += 1
+            num_queued_images += 1
 
                 # if batch_idx >= config.batch_size:
                 #     break
 
-            rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-            # z1 = z2
-            z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
-            z2 = np.asarray(rand_batch_z[0, :])
-            # z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
-            print("MEEE newly assigned z1: " + str(z1))
-            print("MEEE newly gen uniform z2: " + str(z2))
+            if num_queued_images % steps_per_interp == 0:
+                rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
+                # z1 = z2
+                z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
+                z2 = np.asarray(rand_batch_z[0, :])
+                # z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
+                print("MEEE newly assigned z1: " + str(z1))
+                print("MEEE newly gen uniform z2: " + str(z2))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
