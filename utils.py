@@ -327,8 +327,12 @@ def vector_walk_seed(seed, vector):
         vector_cell = vector[idx] + vectorWalkStep
         result_vector.append(vector_cell)
         cell = seed[idx] + vector_cell
+        # cell = max(min(cell, 1.0), -1.0)
+        if cell > 1:
+          cell = -1 + (cell - 1)
+        elif cell < -1:
+          cell = 1 - (-1 - cell)
         print("MEEE vector walk cell: " + str(cell))
-        cell = max(min(cell, 1.0), -1.0)
         result_seed.append(cell)
 
     return result_seed, result_vector
