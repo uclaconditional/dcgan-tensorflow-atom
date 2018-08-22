@@ -30,6 +30,7 @@ flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate 
 flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
 flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
 flags.DEFINE_integer("walk_num", 24, "Number of frames of walk in latent space.")
+flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -91,11 +92,30 @@ def main(_):
     else:
       if not dcgan.load(FLAGS.checkpoint_dir)[0]:
         raise Exception("[!] Train a model first, then run test mode")
+      mode = FLAGS.generation_mode
+      if mode == 1: # Generate 300 random images and their seed value json files
+        generate_random_images(sess, dcgan, FLAGS, 300)
+      elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D 
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, true, true)
+      elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D 
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, true, false)
+      elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C 
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, false, true)
+      elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C 
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, false, false)
+      elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
+      elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 7)
+      elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 8)
+      elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
+
+        
+        
       # Generate
-      # generate_random_images(sess, dcgan, FLAGS, 300)
       # generate_image_from_seed(sess, dcgan, FLAGS)
-      generate_walk_in_latent_space(sess, dcgan, FLAGS)
-      # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700)
       # encode(sess, dcgan, FLAGS)
 
 

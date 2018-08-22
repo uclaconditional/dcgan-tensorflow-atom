@@ -268,7 +268,7 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
-def generate_walk_in_latent_space(sess, dcgan, config):
+def generate_walk_in_latent_space(sess, dcgan, config, mode):
     walk_num = config.walk_num
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
@@ -303,8 +303,15 @@ def generate_walk_in_latent_space(sess, dcgan, config):
         for i in range(config.batch_size):
             z_sample_list.append(seed)
             # seed = walk_seed(seed)
-            seed, vector = vector_walk_seed(seed, vector)
-        # Generate batch images
+            if mode == 6:
+                seed, vector = vector_walk_seed(seed, vector, 1)
+            elif mode == 7:
+                seed, vector = vector_walk_seed(seed, vector, 2)
+            elif mode == 8:
+                seed = walk_seed(seed)
+            elif mode == 9:
+                seed, vector = vector_walk_seed(seed, vector, 3)
+              # Generate batch images
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
 
@@ -318,24 +325,30 @@ def generate_walk_in_latent_space(sess, dcgan, config):
                 return
 
 # Walk with a vector
-def vector_walk_seed(seed, vector):
+def vector_walk_seed(seed, vector, walk_mode):
     maxVectorWalkStep = 0.0005 * 0.25 # PARAM
     result_vector = []
     result_seed = []
     for idx in range(len(seed)):
         vectorWalkStep = random.uniform(-maxVectorWalkStep, maxVectorWalkStep)
         vector_cell = vector[idx] + vectorWalkStep
-        result_vector.append(vector_cell)
         cell = seed[idx] + vector_cell
-        # cell = max(min(cell, 1.0), -1.0) # Clamp mode
-        if cell > 1: # Wrap mode
-          print("MEEE vector walk cell before: " + str(cell))
-          cell = -1 + (cell - 1)
-          print("MEEE vector walk cell after: " + str(cell))
-        elif cell < -1:
-          print("MEEE vector walk cell before: " + str(cell))
-          cell = 1 - (-1 - cell)
-          print("MEEE vector walk cell after: " + str(cell))
+        if walk_mode == 1: # clamp mode
+            cell = max(min(cell, 1.0), -1.0)
+        elif walk_mode == 2:
+            if cell > 1: # Wrap mode
+                print("MEEE vector walk cell before: " + str(cell))
+                cell = -1 + (cell - 1)
+                print("MEEE vector walk cell after: " + str(cell))
+            elif cell < -1:
+                print("MEEE vector walk cell before: " + str(cell))
+                cell = 1 - (-1 - cell)
+                print("MEEE vector walk cell after: " + str(cell))
+        elif walk_mode == 3:
+            if cell > 1 or cell < -1:
+              result_vector = -result_vector
+
+        result_vector.append(vector_cell)
         result_seed.append(cell)
 
     return result_seed, result_vector
@@ -358,7 +371,9 @@ def walk_seed(seed):
     # print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
-def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
+def walk_reverse_clamp(seed, vector
+
+def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_cut, is_rand_steps_per_interp):
     steps_per_interp = 32 # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
@@ -392,13 +407,15 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
 
             if num_queued_images % steps_per_interp == 0:
                 interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
-                steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
-                num_queued_images = 0
+                if is_rand_steps_per_interp:
+                    steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
+                    num_queued_images = 0
                 rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-                # z1 = z2
-                z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
+                if is_cut:
+                    z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
+                else:
+                    z1 = z2
                 z2 = np.asarray(rand_batch_z[0, :])
-                # z2 = np.random.uniform(-1, 1, size=(1 , dcgan.z_dim))[0]
                 print("MEEE newly assigned z1: " + str(z1))
                 print("MEEE newly gen uniform z2: " + str(z2))
 
