@@ -352,7 +352,7 @@ def walk_seed(seed):
     return result_seed
 
 def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
-    steps_per_interp = 16   # PARAM
+    steps_per_interp = 4 # 16   # PARAM
     stored_images = 0
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
@@ -384,7 +384,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
 
         # Naming
         for i in range(config.batch_size):
-            save_name = 'ContInterp_{}_{:05d}'.format(time_stamp , stored_images)
+            save_name = 'ContinuousInterp_{}_{:05d}'.format(time_stamp , stored_images)
             img_path = './samples/' + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
