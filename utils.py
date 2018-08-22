@@ -364,8 +364,8 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
         batch_seeds = np.zeros(shape=(config.batch_size, 100))
 
         while batch_idx < config.batch_size:
-            print("interp_idx: " + str(interp_idx))
             interp_idx = num_queued_images % steps_per_interp
+            print("interp_idx: " + str(interp_idx))
             # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
             i, ratio = enumerate(np.linspace(0, 1, steps_per_interp))[interp_idx]
             print("i: " + str(i) + " ratio: " + str(ratio))
