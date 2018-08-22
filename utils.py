@@ -385,7 +385,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
 
             if num_queued_images % steps_per_interp == 0:
                 interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
-                steps_per_interp = random.randint(0, length(interp_frame_nums))
+                steps_per_interp = random.randint(0, len(interp_frame_nums))
                 num_queued_images = 0
                 rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
                 # z1 = z2
