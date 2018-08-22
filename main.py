@@ -94,8 +94,8 @@ def main(_):
       # Generate
       # generate_random_images(sess, dcgan, FLAGS, 300)
       # generate_image_from_seed(sess, dcgan, FLAGS)
-      # generate_walk_in_latent_space(sess, dcgan, FLAGS)
-      generate_continuous_random_interps(sess, dcgan, FLAGS, 2700)
+      generate_walk_in_latent_space(sess, dcgan, FLAGS)
+      # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700)
       # encode(sess, dcgan, FLAGS)
 
 
