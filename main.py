@@ -95,7 +95,7 @@ def main(_):
       # generate_random_images(sess, dcgan, FLAGS, 3)
       # generate_image_from_seed(sess, dcgan, FLAGS)
       # generate_walk_in_latent_space(sess, dcgan, FLAGS)
-      generate_continuous_random_interps(sess, dcgan, FLAGS, 2700)
+      # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700)
       # encode(sess, dcgan, FLAGS)
 
 
@@ -108,7 +108,7 @@ def main(_):
     # Below is codes for visualization
     # OPTION = 0
     OPTION = 1
-    # visualize(sess, dcgan, FLAGS, OPTION)
+    visualize(sess, dcgan, FLAGS, OPTION)
 
 if __name__ == '__main__':
   tf.app.run()
