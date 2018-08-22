@@ -367,8 +367,9 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num):
             interp_idx = num_queued_images % steps_per_interp
             print("interp_idx: " + str(interp_idx))
             # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
-            i, ratio = enumerate(np.linspace(0, 1, steps_per_interp))[interp_idx]
-            print("i: " + str(i) + " ratio: " + str(ratio))
+            ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
+            # print("i: " + str(i) + " ratio: " + str(ratio))
+            print(" ratio: " + str(ratio))
             
             slerped_z = slerp(ratio, z1, z2)
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
