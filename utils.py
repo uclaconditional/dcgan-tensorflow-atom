@@ -346,7 +346,7 @@ def vector_walk_seed(seed, vector, walk_mode):
                 print("MEEE vector walk cell after: " + str(cell))
         elif walk_mode == 3:
             if cell > 1 or cell < -1:
-              result_vector = -result_vector
+                vector_cell = -vector_cell
 
         result_vector.append(vector_cell)
         result_seed.append(cell)
