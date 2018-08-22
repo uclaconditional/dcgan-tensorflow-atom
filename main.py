@@ -96,13 +96,13 @@ def main(_):
       if mode == 1: # Generate 300 random images and their seed value json files
         generate_random_images(sess, dcgan, FLAGS, 300)
       elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D 
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, true, true)
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
       elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D 
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, true, false)
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, False)
       elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C 
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, false, true)
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, True)
       elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C 
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, false, false)
+        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, False)
       elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
       elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
