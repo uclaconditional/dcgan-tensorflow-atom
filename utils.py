@@ -222,7 +222,7 @@ def generate_random_images(sess, dcgan, config, num_images):
   while 1:
     values = np.arange(0, 1, 1./config.batch_size)
     z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-    print("MEEE first z_sample: " + str(z_sample[0, :5, 0, 0]))
+    print("MEEE first z_sample: " + str(z_sample[0, :5]))
     print("MEEE z_sample shape: " + str(z_sample.shape))
     # for kdx, z in enumerate(z_sample): # Why many times sess.run(z_sample) ?
     # print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
