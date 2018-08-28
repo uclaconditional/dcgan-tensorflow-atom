@@ -234,8 +234,8 @@ def generate_random_images(sess, dcgan, config, num_images):
           return
 
         save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
-        img_path = './samples/' + save_name + '.png'
-        json_path = './samples/' + save_name + '.json'
+        img_path = config.sample_dir + save_name + '.png'
+        json_path = config.sample_dir + save_name + '.json'
         # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
         scipy.misc.imsave(img_path, samples[n, :, :, :])
         rand_seed = z_sample[n, :].tolist()
