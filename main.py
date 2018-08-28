@@ -29,7 +29,7 @@ flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate 
 # MEEE custom flags
 flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
 flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
-flags.DEFINE_integer("walk_num", 24, "Number of frames of walk in latent space.")
+flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space.")
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 FLAGS = flags.FLAGS
 

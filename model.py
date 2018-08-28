@@ -522,7 +522,11 @@ class DCGAN(object):
     if ckpt and ckpt.model_checkpoint_path:
       ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
       self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
-      counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
+      found_iter = next(re.finditer("(\d+)(?!.*\d)",ckpt_name))
+      print("MEEE found iter: " + str(found_iter))
+      # counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
+      counter = int(found_iter).group(0))
+
       print(" [*] Success to read {}".format(ckpt_name))
       return True, counter
     else:
