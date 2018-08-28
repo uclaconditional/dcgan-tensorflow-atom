@@ -226,7 +226,7 @@ def generate_random_images(sess, dcgan, config, num_images):
     print("MEEE z_sample shape: " + str(z_sample.shape))
     # for kdx, z in enumerate(z_sample): # Why many times sess.run(z_sample) ?
     # print("MEEE kdx: " + str(kdx) + " z shape: " + str(z.shape))
-    z[idx % config.batch_size] = values[kdx]
+    # z[idx % config.batch_size] = values[kdx]
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
     print("MEEE samples shape: " + str(samples.shape))
 
