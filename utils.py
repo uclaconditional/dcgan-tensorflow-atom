@@ -231,20 +231,20 @@ def generate_random_images(sess, dcgan, config, num_images):
     print("MEEE samples shape: " + str(samples.shape))
 
     for n in range(config.batch_size):
-    if idx + 1 > num_images:
-        return
+        if idx + 1 > num_images:
+            return
 
-    save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
-    img_path = config.sample_dir + "/" + save_name + '.png'
-    json_path = config.sample_dir + "/" + save_name + '.json'
-    print("img path rand gen: " + img_path);
-    # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
-    scipy.misc.imsave(img_path, samples[n, :, :, :])
-    rand_seed = z_sample[n, :].tolist()
-    # Save seed into json
-    with open(json_path, 'w') as outfile:
-        json.dump(rand_seed, outfile)
-    idx += 1
+        save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
+        img_path = config.sample_dir + "/" + save_name + '.png'
+        json_path = config.sample_dir + "/" + save_name + '.json'
+        print("img path rand gen: " + img_path);
+        # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
+        scipy.misc.imsave(img_path, samples[n, :, :, :])
+        rand_seed = z_sample[n, :].tolist()
+        # Save seed into json
+        with open(json_path, 'w') as outfile:
+            json.dump(rand_seed, outfile)
+        idx += 1
 
 def generate_image_from_seed(sess, dcgan, config):
     json_path = config.input_seed_path
