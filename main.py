@@ -103,6 +103,7 @@ def main(_):
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, True)
       elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C 
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, False)
+      # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
       elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
       elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
