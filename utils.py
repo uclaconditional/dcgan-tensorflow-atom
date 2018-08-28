@@ -234,8 +234,8 @@ def generate_random_images(sess, dcgan, config, num_images):
           return
 
         save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
-        img_path = config.sample_dir + save_name + '.png'
-        json_path = config.sample_dir + save_name + '.json'
+        img_path = config.sample_dir + "/" + save_name + '.png'
+        json_path = config.sample_dir + "/" + save_name + '.json'
         print("img path rand gen: " + img_path);
         # save_images(samples[0, :, :, :], [1, 1], './samples/test_single%s.png' % (0))
         scipy.misc.imsave(img_path, samples[n, :, :, :])
@@ -318,7 +318,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
 
         for i in range(config.batch_size):
             save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
-            img_path = './samples/' + save_name + '.png'
+            img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
             walked += 1
@@ -423,7 +423,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_
         # Naming
         for i in range(config.batch_size):
             save_name = 'ContinuousInterp_{}_{:05d}'.format(time_stamp , stored_images)
-            img_path = './samples/' + save_name + '.png'
+            img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
