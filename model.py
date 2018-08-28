@@ -525,7 +525,7 @@ class DCGAN(object):
       found_iter = next(re.finditer("(\d+)(?!.*\d)",ckpt_name))
       print("MEEE found iter: " + str(found_iter))
       # counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
-      counter = int(found_iter).group(0))
+      counter = int(found_iter.group(0))
 
       print(" [*] Success to read {}".format(ckpt_name))
       return True, counter
