@@ -71,6 +71,9 @@ class DCGAN(object):
     self.checkpoint_dir = checkpoint_dir
     self.data_dir = data_dir
 
+    # MEEE
+    self.checkpoint_name = checkpoint_name
+
     if self.dataset_name == 'mnist':
       self.data_X, self.data_y = self.load_mnist()
       self.c_dim = self.data_X[0].shape[-1]
@@ -520,8 +523,11 @@ class DCGAN(object):
 
     ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
     if ckpt and ckpt.model_checkpoint_path:
-      # ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-      ckpt_name = "DCGAN.model-183502"
+      if self.checkpoint_name == None:
+        ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+      else:
+        # ckpt_name = "DCGAN.model-183502"
+        ckpt_name = self.checkpoint_name 
       print("MEEE checkpoint name: " + str(ckpt_name))
       self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
       found_iter = next(re.finditer("(\d+)(?!.*\d)",ckpt_name))

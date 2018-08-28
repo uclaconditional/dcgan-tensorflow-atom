@@ -31,6 +31,7 @@ flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputt
 flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
 flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space.")
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
+flags.DEFINE_string("checkpoint_name", None, "Name of the checkpoint file to load from e.g. DCGAN.model-183502")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -83,7 +84,9 @@ def main(_):
           crop=FLAGS.crop,
           checkpoint_dir=FLAGS.checkpoint_dir,
           sample_dir=FLAGS.sample_dir,
-          data_dir=FLAGS.data_dir)
+          data_dir=FLAGS.data_dir,
+        # MEEE ATOM options
+          checkpoint_name=FLAGS.checkpoint_name)
 
     show_all_variables()
 
