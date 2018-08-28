@@ -520,12 +520,15 @@ class DCGAN(object):
 
     ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
     if ckpt and ckpt.model_checkpoint_path:
-      ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+      # ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+      ckpt_name = "DCGAN.model-183502"
+      print("MEEE checkpoint name: " + str(ckpt_name))
       self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
       found_iter = next(re.finditer("(\d+)(?!.*\d)",ckpt_name))
       print("MEEE found iter: " + str(found_iter))
       # counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
       counter = int(found_iter.group(0))
+      print("MEEE counter: " + str(counter))
 
       print(" [*] Success to read {}".format(ckpt_name))
       return True, counter
