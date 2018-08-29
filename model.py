@@ -151,7 +151,7 @@ class DCGAN(object):
     self.d_vars = [var for var in t_vars if 'd_' in var.name]
     self.g_vars = [var for var in t_vars if 'g_' in var.name]
 
-    self.saver = tf.train.Saver()
+    self.saver = tf.train.Saver(max_to_keep=10)
 
   def train(self, config):
     d_optim = tf.train.AdamOptimizer(config.learning_rate, beta1=config.beta1) \
@@ -289,7 +289,8 @@ class DCGAN(object):
           % (epoch, config.epoch, idx, batch_idxs,
             time.time() - start_time, errD_fake+errD_real, errG))
 
-        if np.mod(counter, 100) == 1:
+        # if np.mod(counter, 100) == 1:
+        if np.mod(counter, 20) == 1: # MEEE save sample image every 20 frames
           if config.dataset == 'mnist':
             samples, d_loss, g_loss = self.sess.run(
               [self.sampler, self.d_loss, self.g_loss],
@@ -317,7 +318,8 @@ class DCGAN(object):
             except:
               print("one pic error!...")
 
-        if np.mod(counter, 500) == 2:
+        # if np.mod(counter, 500) == 2:
+        if np.mod(counter, 20) == 1: # MEEE save model every 20 frames, sync with save image
           self.save(config.checkpoint_dir, counter)
 
   def discriminator(self, image, y=None, reuse=False):
