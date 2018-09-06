@@ -19,6 +19,9 @@ Path to the directory that contains the images to train on.
 e.g. "--data_dir=/media/conditionalstudio/REAS_MI_2/Persona" if the images are in /media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate.
 ##### --input_fname_pattern :
 Format of the input images.
+```
+--input_fname_pattern="Persona*.jpg"
+```
 ##### --input_height --input_width:
 Dimension of the images to be trained on. If the actual image dimension does not match this number, it will be scaled to match during DCGAN training.
 e.g. --input_height=64
@@ -39,6 +42,7 @@ python main.py --dataset=Frames-all-scaleTranslate-mag2 --data_dir=/media/condit
 ```
 #### The commands does:
 Loads trained model "DCGAN.model-183502" of training of images in "/media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate-mag2" with dimension 128x128 to 128x128. Generate output defined as mode 1 (more on that below).
+#### Options:
 ##### --generation_mode :
 ```
 mode == 1: # Generate 300 random images and their seed value json files
