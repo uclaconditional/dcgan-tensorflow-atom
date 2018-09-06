@@ -25,6 +25,8 @@ e.g. --input_height=64
 ##### --output_height --output_width:
 Dimension of the output (generated) images. It can be different from --input_height --input_width.
 e.g. --output_width=64
+##### --sample_dir :
+Directory that samples generated during training are saved. If not supplied, by default saves in <DCGAN_root>/samples.
 ##### --batch_size :
 Number of images to process per iteration. The higher the number the faster the training. It depends on memory size of the GPU. With 64x64 to 64x64 default batch_size should be fine. With 128x128 to 128x128 batch_size 16 is the fastest we can do on Zotac.
 
@@ -62,7 +64,7 @@ A PRNG random seed can be inputted for mode 6-9 to "walk the same path" as anoth
 ##### --checkpoint_name :
 Name of the model to use for generating. If none supplied the latest saved model (latest checkpoing) is used. To determine which model to use go to <DCGAN_room>/samples (or --sample_dir if explicitly defined) to see samples outputed throughout the training. If the desired image is train_24_7043_iter00183301.png, then --checkpoint_name="DCGAN.model-183301".
 ##### --sample_dir :
-Directory that generated images will be saved. For e.g. 
+Directory that generated images will be saved. For e.g. If not supplied, by default saved in <DCGAN_root>/samples.
 ```
 --sample_dir=samples/Persona-all-scaleTranslate-128_128
 ```
