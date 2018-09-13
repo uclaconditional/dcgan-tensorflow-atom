@@ -443,12 +443,12 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
     base_json_path = interp_data["base_dir"]
-    #seedA = []
-    #seedB = []
-    #with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
-        #seedA = json.load(f)
-    #with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
-        #seedB = json.load(f)
+    seedA = []
+    seedB = []
+    with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
+        seedA = json.load(f)
+    with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
+        seedB = json.load(f)
 
     total_frame_num = 0
     for i in range(len(interp_data["data"])):
@@ -465,9 +465,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     # z1 = np.asarray(rand_batch_z[0, :])
     # z2 = np.asarray(rand_batch_z[1, :])
-    # z1 = np.asarray(seedA, dtype=np.float32)
-    # z2 = np.asarray(seedB, dtype=np.float32)
-    print("z1: " + str(z1))
+    z1 = np.asarray(seedA, dtype=np.float32)
+    z2 = np.asarray(seedB, dtype=np.float32)
+    # print("z1: " + str(z1))
     while stored_images < total_frame_num:
     # for i in range(len(interp_data["data"])):
         batch_idx = 0
