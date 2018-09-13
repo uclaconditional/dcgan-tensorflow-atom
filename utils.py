@@ -437,12 +437,13 @@ def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
     with open(FLAGS.interp_json, 'r') as f:
         interp_data = json.load(f)
 
-    steps_per_interp = interp_data[0][2] # 16   # PARAM
+    steps_per_interp = interp_data["data"][0][2] # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
-    with open(interp_data[0][1] + ".json", 'r') as f:
+    base_json_path = interp_data["base_dir"]
+    with open(base_json_path + interp_data["data"][0][1] + ".json", 'r') as f:
         seedA = json.load()
 
     z_sample_list = []
