@@ -444,7 +444,7 @@ def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
 
     base_json_path = interp_data["base_dir"]
     with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
-        seedA = json.load()
+        seedA = json.load(f)
 
     z_sample_list = []
     for i in range(config.batch_size):
@@ -453,8 +453,10 @@ def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
     z_sample = np.asarray(z_sample_list, dtype=np.float32)
 
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
-    z1 = np.asarray(rand_batch_z[0, :])
-    z2 = np.asarray(rand_batch_z[1, :])
+    # z1 = np.asarray(rand_batch_z[0, :])
+    # z2 = np.asarray(rand_batch_z[1, :])
+    z1 = np.asarray(seedA, dtype=np.float32)
+    print("z1: " + str(z1))
     while stored_images < total_frame_num:
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100))
