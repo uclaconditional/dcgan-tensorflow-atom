@@ -528,6 +528,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
+            print("stored images: " + str(stored_images))
             if stored_images >= total_frame_num:
                 return
 
