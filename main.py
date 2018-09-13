@@ -32,6 +32,7 @@ flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to r
 flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space.")
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 flags.DEFINE_string("checkpoint_name", None, "Name of the checkpoint file to load from e.g. DCGAN.model-183502")
+flags.DEFINE_string("interp_json", None, "Path to json file which contains the info needed to generate mode 10.")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -115,6 +116,8 @@ def main(_):
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 8)
       elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
+      elif mode == 10: # Generate continuous interpretation from a json file
+        generate_continuous_interps_from_json(sess, dcgan, FLAGS)
 
         
         
