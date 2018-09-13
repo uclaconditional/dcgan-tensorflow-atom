@@ -443,12 +443,12 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
     base_json_path = interp_data["base_dir"]
-    seedA = []
-    seedB = []
-    with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
-        seedA = json.load(f)
-    with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
-        seedB = json.load(f)
+    #seedA = []
+    #seedB = []
+    #with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
+        #seedA = json.load(f)
+    #with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
+        #seedB = json.load(f)
 
     total_frame_num = 0
     for i in range(len(interp_data["data"])):
@@ -465,8 +465,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     # z1 = np.asarray(rand_batch_z[0, :])
     # z2 = np.asarray(rand_batch_z[1, :])
-    z1 = np.asarray(seedA, dtype=np.float32)
-    z2 = np.asarray(seedB, dtype=np.float32)
+    # z1 = np.asarray(seedA, dtype=np.float32)
+    # z2 = np.asarray(seedB, dtype=np.float32)
     print("z1: " + str(z1))
     while stored_images < total_frame_num:
     # for i in range(len(interp_data["data"])):
@@ -495,7 +495,6 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
 
             if num_queued_images % steps_per_interp == 0:
                 # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
-                curr_cut_idx += 1
                 steps_per_interp = interp_data["data"][curr_cut_idx][2]
                 print("loading curr cur idx: " + str(curr_cut_idx))
                 num_queued_images = 0
@@ -511,6 +510,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
+                curr_cut_idx += 1
 
                 # if is_cut:
                     # z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
