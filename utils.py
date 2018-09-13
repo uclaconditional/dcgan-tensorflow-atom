@@ -450,11 +450,15 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
         seedB = json.load(f)
 
+    total_frame_num = 0
+    for i in range(len(interp_data["data"])):
+        total_frame_num += interp_data["data"][i][2]
     # z_sample_list = []
     # for i in range(config.batch_size):
         # z_sample_list.append(seed)
 
     # z_sample = np.asarray(z_sample_list, dtype=np.float32)
+    curr_cut_idx = 0
 
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     # z1 = np.asarray(rand_batch_z[0, :])
@@ -462,8 +466,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     z1 = np.asarray(seedA, dtype=np.float32)
     z2 = np.asarray(seedB, dtype=np.float32)
     print("z1: " + str(z1))
-    # while stored_images < total_frame_num:
-    for i in range(len(interp_data["data"])):
+    while stored_images < total_frame_num:
+    # for i in range(len(interp_data["data"])):
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100))
 
@@ -488,21 +492,42 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 #     break
 
             if num_queued_images % steps_per_interp == 0:
-                interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
-                if is_rand_steps_per_interp:
-                    steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
-                    num_queued_images = 0
+                # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
+                curr_cut_idx += 1
+                steps_per_interp = interp_data["data"][curr_cut_idx][2]
+                num_queued_images = 0
+                # if is_rand_steps_per_interp:
+                    # steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
                 rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
-                if is_cut:
-                    z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
-                else:
-                    z1 = z2
-                z2 = np.asarray(rand_batch_z[0, :])
+                # Read new json to z1
+                
+                with open(base_json_path + '/' + interp_data["data"][curr_cut_idx][0] + ".json", 'r') as f:
+                    seedA = json.load(f)
+                with open(base_json_path + '/' + interp_data["data"][curr_cut_idx][1] + ".json", 'r') as f:
+                    seedB = json.load(f)
+                
+                z1 = np.asarray(seedA, dtype=np.float32)
+                z2 = np.asarray(seedB, dtype=np.float32)
+
+                # if is_cut:
+                    # z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
+                # else:
+                    # z1 = z2
+                # z2 = np.asarray(rand_batch_z[0, :])
                 print("MEEE newly assigned z1: " + str(z1))
                 print("MEEE newly gen uniform z2: " + str(z2))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
+        # Naming
+        for i in range(config.batch_size):
+            save_name = '{}_{}_{:05d}'.format(config.interp_json[:-4], time_stamp , stored_images)
+            img_path = config.sample_dir + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
+            stored_images += 1
+            if stored_images >= total_frame_num:
+                return
 
 def slerp(val, low, high):
     """Code from https://github.com/soumith/dcgan.torch/issues/14"""
