@@ -453,6 +453,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     total_frame_num = 0
     for i in range(len(interp_data["data"])):
         total_frame_num += interp_data["data"][i][2]
+
+    print("MEEE total frame num : " + str(total_frame_num))
     # z_sample_list = []
     # for i in range(config.batch_size):
         # z_sample_list.append(seed)
@@ -521,7 +523,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
 
         # Naming
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.interp_json[:-4], time_stamp , stored_images)
+            save_name = '{}_{}_{:05d}'.format(config.interp_json[:-5], time_stamp , stored_images)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
