@@ -530,6 +530,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             stored_images += 1
             print("stored images: " + str(stored_images))
             if stored_images >= total_frame_num:
+                print("MEEE Should return!!")
                 return
 
 def slerp(val, low, high):
