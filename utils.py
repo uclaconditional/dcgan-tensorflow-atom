@@ -431,10 +431,10 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_
             if stored_images >= total_frame_num:
                 return
 
-def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
+def generate_continuous_interps_from_json(sess, dcgan, config):
 
     # Read interp json
-    with open(FLAGS.interp_json, 'r') as f:
+    with open(config.interp_json, 'r') as f:
         interp_data = json.load(f)
 
     steps_per_interp = interp_data["data"][0][2] # 16   # PARAM
