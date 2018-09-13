@@ -529,6 +529,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
             print("stored images: " + str(stored_images))
+            print("total framenum: " + str(total_frame_num))
             if stored_images >= total_frame_num:
                 print("MEEE Should return!!")
                 return
