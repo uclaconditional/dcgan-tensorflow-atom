@@ -443,7 +443,7 @@ def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
     base_json_path = interp_data["base_dir"]
-    with open(base_json_path + interp_data["data"][0][1] + ".json", 'r') as f:
+    with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
         seedA = json.load()
 
     z_sample_list = []
