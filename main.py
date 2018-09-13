@@ -3,7 +3,7 @@ import scipy.misc
 import numpy as np
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json
 
 import tensorflow as tf
 
@@ -99,13 +99,13 @@ def main(_):
       mode = FLAGS.generation_mode
       if mode == 1: # Generate 300 random images and their seed value json files
         generate_random_images(sess, dcgan, FLAGS, 300)
-      elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D 
+      elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
-      elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D 
+      elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, False)
-      elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C 
+      elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, True)
-      elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C 
+      elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, False)
       # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
       elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
@@ -119,8 +119,8 @@ def main(_):
       elif mode == 10: # Generate continuous interpretation from a json file
         generate_continuous_interps_from_json(sess, dcgan, FLAGS)
 
-        
-        
+
+
       # Generate
       # generate_image_from_seed(sess, dcgan, FLAGS)
       # encode(sess, dcgan, FLAGS)

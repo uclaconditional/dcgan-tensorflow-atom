@@ -392,7 +392,7 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_
             ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
             # print("i: " + str(i) + " ratio: " + str(ratio))
             print(" ratio: " + str(ratio))
-            
+
             slerped_z = slerp(ratio, z1, z2)
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
@@ -434,13 +434,23 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_
 def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
 
     # Read interp json
-    with open(FLAGS.interp_json) as f:
+    with open(FLAGS.interp_json, 'r') as f:
         interp_data = json.load(f)
-    
-    steps_per_interp = 32 # 16   # PARAM
+
+    steps_per_interp = interp_data[0][2] # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+
+    with open(interp_data[0][1] + ".json", 'r') as f:
+        seedA = json.load()
+
+    z_sample_list = []
+    for i in range(config.batch_size):
+        z_sample_list.append(seed)
+
+    z_sample = np.asarray(z_sample_list, dtype=np.float32)
+
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     z1 = np.asarray(rand_batch_z[0, :])
     z2 = np.asarray(rand_batch_z[1, :])
@@ -455,7 +465,7 @@ def generate_continuous_interps_from_json(sess, dcgan, FLAGS):
             ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
             # print("i: " + str(i) + " ratio: " + str(ratio))
             print(" ratio: " + str(ratio))
-            
+
             slerped_z = slerp(ratio, z1, z2)
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
@@ -575,8 +585,7 @@ def image_manifold_size(num_images):
   manifold_h = int(np.floor(np.sqrt(num_images)))
   manifold_w = int(np.ceil(np.sqrt(num_images)))
   # MEEE to account for change in batch size
-  manifold_w = int(8) 
+  manifold_w = int(8)
   manifold_h = int(num_images/8)
   assert manifold_h * manifold_w == num_images
   return manifold_h, manifold_w
-
