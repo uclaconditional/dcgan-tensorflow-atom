@@ -497,6 +497,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
                 print("loading curr cur idx: " + str(curr_cut_idx))
                 print("num_queued_images: " + str(num_queued_images))
+                if curr_cut_idx >= len(interp_data["data"]):
+                    continue
                 steps_per_interp = interp_data["data"][curr_cut_idx][2]
                 num_queued_images = 0
                 # if is_rand_steps_per_interp:
