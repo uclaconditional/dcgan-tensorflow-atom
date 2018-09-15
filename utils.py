@@ -475,16 +475,16 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
 
         while batch_idx < config.batch_size:
             interp_idx = num_queued_images % steps_per_interp
-            print("interp_idx: " + str(interp_idx))
+            # print("interp_idx: " + str(interp_idx))
             # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
             ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
             # print("i: " + str(i) + " ratio: " + str(ratio))
-            print(" ratio: " + str(ratio))
+            # print(" ratio: " + str(ratio))
 
             slerped_z = slerp(ratio, z1, z2)
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
-            print("MEEE batch_idx: " + str(batch_idx))
+            # print("MEEE batch_idx: " + str(batch_idx))
             batch_seeds[batch_idx] = slerped_z
             # print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
             batch_idx += 1
@@ -495,6 +495,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
 
             if num_queued_images % steps_per_interp == 0:
                 # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
+                curr_cut_idx += 1
                 print("loading curr cur idx: " + str(curr_cut_idx))
                 print("num_queued_images: " + str(num_queued_images))
                 if curr_cut_idx >= len(interp_data["data"]):
@@ -513,15 +514,15 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
-                curr_cut_idx += 1
+                
 
                 # if is_cut:
                     # z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
                 # else:
                     # z1 = z2
                 # z2 = np.asarray(rand_batch_z[0, :])
-                # print("MEEE newly assigned z1: " + str(z1))
-                # print("MEEE newly gen uniform z2: " + str(z2))
+                print("MEEE newly assigned z1: " + str(z1))
+                print("MEEE newly gen uniform z2: " + str(z2))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
