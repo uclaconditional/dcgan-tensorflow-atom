@@ -325,12 +325,13 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    orig_seed = seed[:]
     sin_cycle_json_path = config.sin_cycle_json
     z_sample_list = []
     num_cycles = 2
     frames_per_cycle = 30 * 6# PARAM one cycle in 6 seconds
-    num_total_frames = frames_per_cycle * num_cycles * 100
-    num_frames_per_number = frames_per_cycle * num_cycles
+    num_total_frames = frames_per_cycle * 100
+    # num_frames_per_number = frames_per_cycle * num_cycles
     sin_step = (2 * math.pi) / frames_per_cycle
     saved_frame = 0
     curr_frame = 0
@@ -342,6 +343,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
             # Update seed with sin
             seed[int(int(curr_frame) / int(frames_per_cycle))] = math.sin((curr_frame % frames_per_cycle) * sin_step)
             curr_frame+=1
+            seed = orig_seed[:]
 
 
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
