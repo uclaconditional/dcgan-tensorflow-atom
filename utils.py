@@ -328,7 +328,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
     sin_cycle_json_path = config.sin_cycle_json
     z_sample_list = []
     num_cycles = 2
-    frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
+    frames_per_cycle = 30 * 6# PARAM one cycle in 6 seconds
     num_total_frames = frames_per_cycle * num_cycles * 100
     num_frames_per_number = frames_per_cycle * num_cycles
     sin_step = (2 * math.pi) / frames_per_cycle
