@@ -315,7 +315,7 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
     
-def generate_sin_cycle(sess, dcgan, config):
+def generate_sin_cycle(sess, dcgan, config, num_cycles):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
