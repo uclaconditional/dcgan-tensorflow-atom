@@ -299,6 +299,8 @@ def generate_single_value_changes(sess, dcgan, config):
 
     while len(z_sample_list) < config.batch_size:
         z_sample_list.append(seed)
+    for i in range(50):
+        print("double check: " + str(z_sample_list[i][0]))
 
     z_sample = np.asarray(z_sample_list, dtype=np.float32)
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
