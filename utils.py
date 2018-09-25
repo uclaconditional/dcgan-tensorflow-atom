@@ -285,7 +285,7 @@ def generate_single_value_changes(sess, dcgan, config):
     step = 0.00001
     for i in range(5):
         for j in range(10):
-            z_sample_list.append(seed)
+            z_sample_list.append(seed.copy())
             seed[0] += step
             print("seed[0]: " + str(seed[0]) + " step: " + str(step))
         step *= 10
