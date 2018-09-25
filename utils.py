@@ -315,7 +315,7 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
     
-def generate_sin_cycle(sess, dcgan, config, num_cycles):
+def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
@@ -326,8 +326,9 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles):
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
-    num_total_frames = 30 * 10 # PARAM one cycle in 10 seconds
-    sin_step = (2 * math.pi) / (30 * 10)
+    frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
+    num_total_frames = frames_per_cycle * num_cycles
+    sin_step = (2 * math.pi) / frames_per_cycle
     saved_frame = 0
     curr_frame = 0
 
