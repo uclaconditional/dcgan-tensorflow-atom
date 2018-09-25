@@ -282,16 +282,20 @@ def generate_single_value_changes(sess, dcgan, config):
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
     # for i in range(config.batch_size):
+    step = 0.00001
     for i in range(5):
-        step = 0.00001
         for j in range(10):
             z_sample_list.append(seed)
             seed[0] += step
-            seed[1] += step
-            seed[2] += step
-            seed[3] += step
-            print("seed[0]: " + str(seed[0]) + " i: " + str(i) + " j: " + str(j))
+            print("seed[0]: " + str(seed[0]) + " step: " + str(step))
         step *= 10
+        # Reset json
+        if json_path:
+            with open(json_path, 'r') as f:
+                seed = json.load(f)
+            print("MEEE seed read: " + str(seed))
+        else:
+            print(Fore.RED + "MEEE WARNING: Input seed path is None.")
 
     while len(z_sample_list) < config.batch_size:
         z_sample_list.append(seed)
