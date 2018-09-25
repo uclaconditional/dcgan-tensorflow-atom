@@ -270,7 +270,7 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
-def generate_single_value_changes(sess, dcgan, config):
+def generate_single_value_changes(sess, dcgan, config, change_idx_num):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
@@ -286,7 +286,8 @@ def generate_single_value_changes(sess, dcgan, config):
     for i in range(5):
         for j in range(10):
             z_sample_list.append(seed[:])
-            seed[0] += step
+            for k in range(change_idx_num):
+                seed[k] += step
             print("seed[0]: " + str(seed[0]) + " step: " + str(step))
         step *= 10
         # Reset json
@@ -314,6 +315,38 @@ def generate_single_value_changes(sess, dcgan, config):
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
     
+def generate_sin_cycle(sess, dcgan, config):
+    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    json_path = config.input_seed_path
+    seed = [] # Will be reassigned before use
+    if json_path:
+        with open(json_path, 'r') as f:
+            seed = json.load(f)
+        print("MEEE seed read: " + str(seed))
+    else:
+        print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    z_sample_list = []
+    num_total_frames = 24 * 10 # PARAM one cycle in 10 seconds
+    saved_frame = 0
+
+    while curr_frame < num_total_frames:
+        z_sample_list = []
+        for i in range(config.batch_size):
+           z_sample_list.append(seed)
+           # Update seed
+
+        z_sample = np.asarray(z_sample_list, dtype=np.float32)
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+        for i in range(config.batch_size):
+            save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+            img_path = config.sample_dir + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "MEEE walk image generated: " + img_path)
+            saved_frame += 1
+            if saved_frame >= num_total_frame:
+                return
+
+
 
 def generate_walk_in_latent_space(sess, dcgan, config, mode):
     walk_num = config.walk_num
