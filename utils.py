@@ -348,7 +348,7 @@ def generate_sin_cycle(sess, dcgan, config):
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE sin cycle image generated: " + img_path)
             saved_frame += 1
-            if saved_frame >= num_total_frame:
+            if saved_frame >= num_total_frames:
                 return
 
 
