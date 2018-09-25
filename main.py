@@ -121,9 +121,9 @@ def main(_):
       elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
       elif mode == 12: # Change one value out of 100
-        generate_single_value_changes(sess, dcgan, FLAGS)
+        generate_single_value_changes(sess, dcgan, FLAGS, 2)
       elif mode == 13: # Sinusoidal cycling of first value, one cycle in 10 seconds
-        generate_sin_cycle(sess, dcgan, FLAGS, 2)
+        generate_sin_cycle(sess, dcgan, FLAGS)
 
 
 
