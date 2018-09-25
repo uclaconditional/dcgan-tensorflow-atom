@@ -340,7 +340,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
         for i in range(config.batch_size):
             z_sample_list.append(seed[:])
             # Update seed with sin
-            seed[int(curr_frame) / int(frames_per_cycle)] = math.sin((curr_frame % frames_per_cycle) * sin_step)
+            seed[int(int(curr_frame) / int(frames_per_cycle))] = math.sin((curr_frame % frames_per_cycle) * sin_step)
             curr_frame+=1
 
 
