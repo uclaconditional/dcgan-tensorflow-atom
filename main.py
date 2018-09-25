@@ -3,7 +3,7 @@ import scipy.misc
 import numpy as np
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100
 
 import tensorflow as tf
 
@@ -33,6 +33,7 @@ flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 flags.DEFINE_string("checkpoint_name", None, "Name of the checkpoint file to load from e.g. DCGAN.model-183502")
 flags.DEFINE_string("interp_json", None, "Path to json file which contains the info needed to generate mode 10.")
+flags.DEFINE_string("sin_cycle_json", None, "Path to json file which contains the info needed to generate mode 14.")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -124,6 +125,9 @@ def main(_):
         generate_single_value_changes(sess, dcgan, FLAGS, 2)
       elif mode == 13: # Sinusoidal cycling of first value, one cycle in 10 seconds
         generate_sin_cycle(sess, dcgan, FLAGS, 2, 10)
+      elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
+        generate_sin_cycle(sess, dcgan, FLAGS, 0, 0)
+      elif mode == 15: # Sinusoidal cycling through all 100 numbers, 2 cycles per number
 
 
 

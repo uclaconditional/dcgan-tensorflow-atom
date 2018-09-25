@@ -314,6 +314,46 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
+
+def generate_sin_cycle_all_100(sess, dcgan, config):
+    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    json_path = config.input_seed_path
+    seed = [] # Will be reassigned before use
+    if json_path:
+        with open(json_path, 'r') as f:
+            seed = json.load(f)
+        print("MEEE seed read: " + str(seed))
+    else:
+        print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    sin_cycle_json_path = config.sin_cycle_json
+    z_sample_list = []
+    num_cycles = 2
+    frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
+    num_total_frames = frames_per_cycle * num_cycles * 100
+    num_frames_per_number = frames_per_cycle * num_cycles
+    sin_step = (2 * math.pi) / frames_per_cycle
+    saved_frame = 0
+    curr_frame = 0
+
+    while curr_frame < num_total_frames:
+        z_sample_list = []
+        for i in range(config.batch_size):
+            z_sample_list.append(seed[:])
+            # Update seed with sin
+            seed[int(curr_frame) / int(frames_per_cycle)] = math.sin((curr_frame % frames_per_cycle) * sin_step)
+            curr_frame+=1
+
+
+        z_sample = np.asarray(z_sample_list, dtype=np.float32)
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+        for i in range(config.batch_size):
+            save_name = 'Sin_cycle_all_100_{}_{:05d}'.format(time_stamp, saved_frame)
+            img_path = config.sample_dir + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "MEEE sin cycle all 100 image generated: " + img_path)
+            saved_frame += 1
+            if saved_frame >= num_total_frames:
+                return
     
 def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
@@ -325,6 +365,7 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    sin_cycle_json_path = config.sin_cycle_json
     z_sample_list = []
     frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
     num_total_frames = frames_per_cycle * num_cycles
