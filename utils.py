@@ -287,6 +287,9 @@ def generate_single_value_changes(sess, dcgan, config):
         for j in range(10):
             z_sample_list.append(seed)
             seed[0] += step
+            seed[1] += step
+            seed[2] += step
+            seed[3] += step
         step *= 10
 
     while len(z_sample_list) < config.batch_size:
@@ -301,7 +304,7 @@ def generate_single_value_changes(sess, dcgan, config):
             save_name = 'mode11_{}_{}_{:02d}'.format(time_stamp, str(5-i), j)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
-            print(Fore.CYAN + "MEEE mode11 image generated: " + img_path)
+            print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
     
 
