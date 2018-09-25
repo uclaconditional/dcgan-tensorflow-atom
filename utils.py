@@ -340,8 +340,8 @@ def vector_walk_seed(seed, vector, walk_mode):
     for idx in range(len(seed)):
         vectorWalkStep = random.uniform(-maxVectorWalkStep, maxVectorWalkStep)
         if walk_mode == 11:
-            # vectorWalkStep[50:] = np.zeros(50)
-            vectorWalkStep = vectorWalkStep[:50] + [0] * 50
+            if idx > 49:
+                vectorWalkStep = 0.0
         vector_cell = vector[idx] + vectorWalkStep
         cell = seed[idx] + vector_cell
         if walk_mode == 6: # clamp mode
