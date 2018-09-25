@@ -300,19 +300,25 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
     walked = 0
     max_vector_length = 0.005 # PARAM
     vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
+    # Zero out half the vector if mode 11 and move 50/100 vectors
+    if mode == 11:
+        vector[50:] = np.zeros(50)
     while walked < walk_num:
         z_sample_list = []
         for i in range(config.batch_size):
             z_sample_list.append(seed)
             # seed = walk_seed(seed)
             if mode == 6:
-                seed, vector = vector_walk_seed(seed, vector, 1)
+                seed, vector = vector_walk_seed(seed, vector, 6)
             elif mode == 7:
-                seed, vector = vector_walk_seed(seed, vector, 2)
+                seed, vector = vector_walk_seed(seed, vector, 7)
             elif mode == 8:
                 seed = walk_seed(seed)
             elif mode == 9:
-                seed, vector = vector_walk_seed(seed, vector, 3)
+                seed, vector = vector_walk_seed(seed, vector, 9)
+            elif mode == 11:
+                seed, vector = vector_walk_seed(seed, vector, 11)
+              
               # Generate batch images
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
@@ -333,11 +339,13 @@ def vector_walk_seed(seed, vector, walk_mode):
     result_seed = []
     for idx in range(len(seed)):
         vectorWalkStep = random.uniform(-maxVectorWalkStep, maxVectorWalkStep)
+        if walk_mode == 11:
+            vectorWalkStep[50:] = np.zeros(50)
         vector_cell = vector[idx] + vectorWalkStep
         cell = seed[idx] + vector_cell
-        if walk_mode == 1: # clamp mode
+        if walk_mode == 6: # clamp mode
             cell = max(min(cell, 1.0), -1.0)
-        elif walk_mode == 2:
+        elif walk_mode == 7 or walk_mode == 11:
             if cell > 1: # Wrap mode
                 print("MEEE vector walk cell before: " + str(cell))
                 cell = -1 + (cell - 1)
@@ -346,7 +354,7 @@ def vector_walk_seed(seed, vector, walk_mode):
                 print("MEEE vector walk cell before: " + str(cell))
                 cell = 1 - (-1 - cell)
                 print("MEEE vector walk cell after: " + str(cell))
-        elif walk_mode == 3:
+        elif walk_mode == 9:
             if cell > 1 or cell < -1:
                 vector_cell = -vector_cell
 

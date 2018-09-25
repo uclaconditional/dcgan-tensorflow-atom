@@ -98,7 +98,7 @@ def main(_):
         raise Exception("[!] Train a model first, then run test mode")
       mode = FLAGS.generation_mode
       if mode == 1: # Generate 300 random images and their seed value json files
-        generate_random_images(sess, dcgan, FLAGS, 300)
+        generate_random_images(sess, dcgan, FLAGS, 500)
       elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
       elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
@@ -118,6 +118,8 @@ def main(_):
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
       elif mode == 10: # Generate continuous interpretation from a json file
         generate_continuous_interps_from_json(sess, dcgan, FLAGS)
+      elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
 
 
 
