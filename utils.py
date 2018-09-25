@@ -327,7 +327,7 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles):
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
     num_total_frames = 30 * 10 # PARAM one cycle in 10 seconds
-    sin_step = (2 * math.pi) / (24 * 10)
+    sin_step = (2 * math.pi) / (30 * 10)
     saved_frame = 0
     curr_frame = 0
 
