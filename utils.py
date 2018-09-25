@@ -290,6 +290,7 @@ def generate_single_value_changes(sess, dcgan, config):
             seed[1] += step
             seed[2] += step
             seed[3] += step
+            print("seed[0]: " + seed[0] + " i: " + i + " j: " + j)
         step *= 10
 
     while len(z_sample_list) < config.batch_size:
