@@ -120,6 +120,8 @@ def main(_):
         generate_continuous_interps_from_json(sess, dcgan, FLAGS)
       elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
+      elif mode == 12: # Change one value out of 100
+        generate_single_value_changes(sess, dcgan, FLAGS)
 
 
 
