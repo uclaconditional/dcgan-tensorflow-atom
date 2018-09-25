@@ -298,7 +298,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
     #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
-    max_vector_length = 0.005 # PARAM
+    max_vector_length = 0.003 #0.005 # PARAM
     vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
     # Zero out half the vector if mode 11 and move 50/100 vectors
     if mode == 11:
@@ -334,7 +334,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
 
 # Walk with a vector
 def vector_walk_seed(seed, vector, walk_mode):
-    maxVectorWalkStep = 0.0005  # PARAM
+    maxVectorWalkStep = 0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
     for idx in range(len(seed)):
