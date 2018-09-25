@@ -303,8 +303,6 @@ def generate_single_value_changes(sess, dcgan, config):
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
             print(Fore.CYAN + "MEEE mode11 image generated: " + img_path)
             saved_idx+=1
-            if walked >= walk_num:
-                return
     
 
 def generate_walk_in_latent_space(sess, dcgan, config, mode):
