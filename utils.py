@@ -309,7 +309,7 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
     saved_idx = 0
     for i in range(5):
         for j in range(10):
-            save_name = 'mode11_{}_{}_{:02d}'.format(time_stamp, str(5-i), j)
+            save_name = 'mode11_{}_altIdx{}_{}_{:02d}'.format(time_stamp, change_idx_num, str(5-i), j)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
@@ -327,21 +327,26 @@ def generate_sin_cycle(sess, dcgan, config):
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
     num_total_frames = 24 * 10 # PARAM one cycle in 10 seconds
+    sin_step = (2 * math.pi) / (24 * 10)
     saved_frame = 0
+    curr_frame = 0
 
     while curr_frame < num_total_frames:
         z_sample_list = []
         for i in range(config.batch_size):
-           z_sample_list.append(seed)
-           # Update seed
+            z_sample_list.append(seed[:])
+            # Update seed with sin
+            seed[0] = math.sin(curr_frame * sin_step)
+            curr_frame+=1
+
 
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
-            save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+            save_name = 'Sin_cycle_{}_{:05d}'.format(time_stamp, saved_frame)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
-            print(Fore.CYAN + "MEEE walk image generated: " + img_path)
+            print(Fore.CYAN + "MEEE sin cycle image generated: " + img_path)
             saved_frame += 1
             if saved_frame >= num_total_frame:
                 return
