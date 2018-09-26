@@ -359,7 +359,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
             if saved_frame >= num_total_frames:
                 return
     
-def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
+def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle, mode):
     time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
