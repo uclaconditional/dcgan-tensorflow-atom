@@ -343,7 +343,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
             # Update seed with sin
             seed = orig_seed[:]
             seed_idx = int(int(curr_frame) / int(frames_per_cycle)) % num_total_frames
-            print("seed_idx: " + str(seed_idx))
+            print("seed_idx: " + str(seed_idx) + " : " + str(curr_frame) + " / " + str(frames_per_cycle) " % " + num_total_frames)
             seed[seed_idx] = math.sin((curr_frame % frames_per_cycle) * sin_step)
             curr_frame+=1
 
@@ -369,16 +369,6 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
-    sin_cycle_json_path = config.sin_cycle_json
-    cycle_data = None
-    if mode == 14:
-        if sin_cycle_json_path:
-            with open(sin_cycle_json_path, 'r') as f:
-                cycle_data = json.load(f)
-            print("MEEE cycle data read: " + str(cycle_data))
-        else:
-            print(Fore.RED + "MEEE WARNING: sin cycle json is None.")
-        
     z_sample_list = []
     frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
     num_total_frames = frames_per_cycle * num_cycles
@@ -386,19 +376,34 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle):
     saved_frame = 0
     curr_frame = 0
 
+    sin_cycle_json_path = config.sin_cycle_json
+    cycle_data = None
+    if mode == 14:
+        if sin_cycle_json_path:
+            with open(sin_cycle_json_path, 'r') as f:
+                cycle_json = json.load(f)
+            print("MEEE cycle data read: " + str(cycle_json))
+        else:
+            print(Fore.RED + "MEEE WARNING: sin cycle json is None.")
+        num_total_frames = cycle_json["overall_length"]
+        cycle_data = cycle_json["data"]
+        
+
     while curr_frame < num_total_frames:
         z_sample_list = []
         for i in range(config.batch_size):
             z_sample_list.append(seed[:])
             # Update seed with sin
-            seed[0] = math.sin(curr_frame * sin_step)
+            for sin in cycle_data:
+                sin_step = (2*math.pi) / sin["framesPerCycle"]
+                seed[sin["idx"]] = math.sin(curr_frame * sin_step + sin["phaseShift"])
             curr_frame+=1
 
 
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
-            save_name = 'Sin_cycle_{}_{:05d}'.format(time_stamp, saved_frame)
+            save_name = 'Sin_cycle_withJson_{}_{:05d}'.format(time_stamp, saved_frame)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE sin cycle image generated: " + img_path)
