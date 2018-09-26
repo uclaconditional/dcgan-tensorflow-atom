@@ -343,7 +343,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
             # Update seed with sin
             seed = orig_seed[:]
             seed_idx = int(int(curr_frame) / int(frames_per_cycle)) % num_total_frames
-            print("seed_idx: " + str(seed_idx) + " : " + str(curr_frame) + " / " + str(frames_per_cycle) " % " + num_total_frames)
+            print("seed_idx: " + str(seed_idx) + " : " + str(curr_frame) + " / " + str(frames_per_cycle) + " % " + num_total_frames)
             seed[seed_idx] = math.sin((curr_frame % frames_per_cycle) * sin_step)
             curr_frame+=1
 
