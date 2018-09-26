@@ -126,7 +126,7 @@ def main(_):
       elif mode == 13: # Sinusoidal cycling of first value, one cycle in 10 seconds
         generate_sin_cycle(sess, dcgan, FLAGS, 2, 10)
       elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
-        generate_sin_cycle(sess, dcgan, FLAGS, 0, 0)
+        generate_sin_cycle(sess, dcgan, FLAGS, 1, 1)
       elif mode == 15: # Sinusoidal cycling through all 100 numbers, 2 cycles per number
         generate_sin_cycle_all_100(sess, dcgan, FLAGS)
 
