@@ -396,7 +396,7 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle, mode)
             # Update seed with sin
             for sin in cycle_data:
                 sin_step = (2*math.pi) / sin["framesPerCycle"]
-                seed[sin["idx"]] = math.sin(curr_frame * sin_step + sin["phaseShift"])
+                seed[sin["idx"]] = math.sin(curr_frame * sin_step + sin["phaseShift"] * 2 * math.pi)
             curr_frame+=1
 
 
