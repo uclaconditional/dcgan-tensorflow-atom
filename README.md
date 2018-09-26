@@ -55,10 +55,10 @@ mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
 mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
 mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
 mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
-mode == 12: # Change one value out of 100
-mode == 13: # Sinusoidal cycling of first value, one cycle in 10 seconds
-mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
-mode == 15: # Sinusoidal cycling through all 100 numbers, 2 cycles per number
+mode == 12:  # 10th to 100000th digit change for 1st number of seed
+mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
+mode == 14: # Sinusoidal cycling of values specified by json (use --sin_cycle_json)
+mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
 ```
 e.g. --generation_mode=6
 ##### More on generation_mode:
