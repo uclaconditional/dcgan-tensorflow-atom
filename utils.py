@@ -624,7 +624,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     # for i in range(len(interp_data["data"])):
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
-        batch_seeds = []
+        # batch_seeds = []
 
         while batch_idx < config.batch_size:
             interp_idx = num_queued_images % steps_per_interp
