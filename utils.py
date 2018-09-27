@@ -704,7 +704,10 @@ def slerp(val, low, high):
     print("typeomega: " + str(type(omega)) + " typeso: " + str(type(so)) + " val type: " + str(type(val)))
     if so == 0:
         return (1.0-val) * low + val * high # L'Hopital's rule/LERP
-    return np.sin((1.0-val)*omega) / so * low + np.sin(val*omega) / so * high
+    result = np.sin((1.0-val)*omega) / so * low + np.sin(val*omega) / so * high
+    if val <= 0.0:
+      print(str(result - low))
+    return result
 
 
 
