@@ -685,7 +685,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 # print("MEEE newly assigned z1: " + str(z1))
                 # print("MEEE newly gen uniform z2: " + str(z2))
 
-        np_batch_seeds = np.asarray(batch_seeds, dtype=np.float32))
+        np_batch_seeds = np.asarray(batch_seeds, dtype=np.float32)
         # samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: np_batch_seeds})
 
