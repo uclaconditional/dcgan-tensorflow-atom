@@ -54,6 +54,7 @@ mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
 mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
 mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
 mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
+mode == 10: # Generate continuous interpretation from a json file
 mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
 mode == 12:  # 10th to 100000th digit change for 1st number of seed
 mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
@@ -77,7 +78,8 @@ Directory that generated images will be saved. For e.g. If not supplied, by defa
 ```
 --sample_dir=samples/Persona-all-scaleTranslate-128_128
 ```
-
+##### Mode 10 and 14
+A json file of a set format needs to be inputted for these modes. For more information please refer to wiki page on json.
 
 ### To combine the generated images into a video file:
 #### Example command:
