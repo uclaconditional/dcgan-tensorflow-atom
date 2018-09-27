@@ -637,15 +637,15 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             # print("i: " + str(i) + " ratio: " + str(ratio))
             print(" ratio: " + str(ratio))
 
-            # slerped_z = slerp(ratio, z1, z2)
+            slerped_z = slerp(ratio, z1, z2)
             # slerped_z = z1 * (1.0 - ratio) + z2 * ratio
-            slerped_z = seedA
+            # slerped_z = seedA
             # print("slerped_z: " + str(slerped_z))
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
             # print("MEEE batch_idx: " + str(batch_idx))
-            # batch_seeds[batch_idx] = slerped_z
-            batch_seeds.append(slerped_z[:])
+            batch_seeds[batch_idx] = slerped_z
+            # batch_seeds.append(slerped_z[:])
             # print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
             batch_idx += 1
             num_queued_images += 1
@@ -685,9 +685,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 # print("MEEE newly assigned z1: " + str(z1))
                 # print("MEEE newly gen uniform z2: " + str(z2))
 
-        np_batch_seeds = np.asarray(batch_seeds, dtype=np.float32)
-        # samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
-        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: np_batch_seeds})
+        # np_batch_seeds = np.asarray(batch_seeds, dtype=np.float32)
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+        # samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: np_batch_seeds})
 
         # Naming
         for i in range(config.batch_size):
