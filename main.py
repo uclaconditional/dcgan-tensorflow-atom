@@ -121,13 +121,13 @@ def main(_):
         generate_continuous_interps_from_json(sess, dcgan, FLAGS)
       elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
-      elif mode == 12: # Change one value out of 100
+      elif mode == 12: # 10th to 100000th digit change for 1st number of seed
         generate_single_value_changes(sess, dcgan, FLAGS, 2)
-      elif mode == 13: # Sinusoidal cycling of first value, one cycle in 10 seconds
+      elif mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
         generate_sin_cycle(sess, dcgan, FLAGS, 2, 10, 13)
       elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
         generate_sin_cycle(sess, dcgan, FLAGS, 1, 1, 14)
-      elif mode == 15: # Sinusoidal cycling through all 100 numbers, 2 cycles per number
+      elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
         generate_sin_cycle_all_100(sess, dcgan, FLAGS)
 
 
