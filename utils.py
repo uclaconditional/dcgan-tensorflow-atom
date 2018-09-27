@@ -606,7 +606,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
     for i in range(len(interp_data["data"])):
         total_frame_num += interp_data["data"][i][2]
 
-    print("MEEE total frame num : " + str(total_frame_num))
+    # print("MEEE total frame num : " + str(total_frame_num))
     # z_sample_list = []
     # for i in range(config.batch_size):
         # z_sample_list.append(seed)
@@ -651,8 +651,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             if num_queued_images % steps_per_interp == 0:
                 # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
                 curr_cut_idx += 1
-                print("loading curr cur idx: " + str(curr_cut_idx))
-                print("num_queued_images: " + str(num_queued_images))
+                # print("loading curr cur idx: " + str(curr_cut_idx))
+                # print("num_queued_images: " + str(num_queued_images))
                 if curr_cut_idx >= len(interp_data["data"]):
                     continue
                 steps_per_interp = interp_data["data"][curr_cut_idx][2]
@@ -669,7 +669,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
-                print("z1: " + str(z1) + " type z1: " + str(type(z1)))
+                # print("z1: " + str(z1) + " type z1: " + str(type(z1)))
                 
 
                 # if is_cut:
@@ -677,8 +677,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 # else:
                     # z1 = z2
                 # z2 = np.asarray(rand_batch_z[0, :])
-                print("MEEE newly assigned z1: " + str(z1))
-                print("MEEE newly gen uniform z2: " + str(z2))
+                # print("MEEE newly assigned z1: " + str(z1))
+                # print("MEEE newly gen uniform z2: " + str(z2))
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
 
@@ -689,8 +689,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
-            print("stored images: " + str(stored_images))
-            print("total framenum: " + str(total_frame_num))
+            # print("stored images: " + str(stored_images))
+            # print("total framenum: " + str(total_frame_num))
             if stored_images >= total_frame_num:
                 print("MEEE Should return!!")
                 return
