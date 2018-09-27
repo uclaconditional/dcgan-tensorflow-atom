@@ -669,6 +669,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
+                print("z1: " + str(z1))
                 
 
                 # if is_cut:
