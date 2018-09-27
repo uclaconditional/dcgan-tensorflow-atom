@@ -630,12 +630,13 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             # print("interp_idx: " + str(interp_idx))
             # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
             ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
-            print("linspace:")
-            print(str(np.linspace(0, 1, steps_per_interp)))
+            # print("linspace:")
+            # print(str(np.linspace(0, 1, steps_per_interp)))
             # print("i: " + str(i) + " ratio: " + str(ratio))
-            # print(" ratio: " + str(ratio))
+            print(" ratio: " + str(ratio))
 
             slerped_z = slerp(ratio, z1, z2)
+            print("slerped_z: " + slerped_z)
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
             # print("MEEE batch_idx: " + str(batch_idx))
