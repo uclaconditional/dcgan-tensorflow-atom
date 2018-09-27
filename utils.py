@@ -630,6 +630,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             # print("interp_idx: " + str(interp_idx))
             # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
             ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
+            ratio = np.float32(ratio)
             # print("linspace:")
             # print(str(np.linspace(0, 1, steps_per_interp)))
             # print("i: " + str(i) + " ratio: " + str(ratio))
