@@ -636,7 +636,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             print(" ratio: " + str(ratio))
 
             slerped_z = slerp(ratio, z1, z2)
-            print("slerped_z: " + slerped_z)
+            print("slerped_z: " + str(slerped_z))
             # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
             # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
             # print("MEEE batch_idx: " + str(batch_idx))
