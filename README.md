@@ -60,6 +60,7 @@ mode == 12:  # 10th to 100000th digit change for 1st number of seed
 mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
 mode == 14: # Sinusoidal cycling of values specified by json (use --sin_cycle_json)
 mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
+mode == 16: # Jumps in latent space, velocity/acceleration with wrap mode
 ```
 e.g. --generation_mode=6
 ##### More on generation_mode:
@@ -80,6 +81,9 @@ Directory that generated images will be saved. For e.g. If not supplied, by defa
 ```
 ##### Mode 10 and 14
 A json file of a set format needs to be inputted for these modes. For more information please refer to wiki page on json.
+
+##### Mode 16
+The maximum and minimum possible change in velocity can be set through `--max_jump_step` and `--min_jump_step`.
 
 ### To combine the generated images into a video file:
 #### Example command:
