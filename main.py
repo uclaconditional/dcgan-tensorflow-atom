@@ -129,7 +129,8 @@ def main(_):
         generate_sin_cycle(sess, dcgan, FLAGS, 1, 1, 14)
       elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
         generate_sin_cycle_all_100(sess, dcgan, FLAGS)
-
+      elif mode == 16: # Walk in latent space, velocity/acceleration with wrap mode
+        generate_walk_in_latent_space(sess, dcgan, FLAGS, 7)
 
 
       # Generate

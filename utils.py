@@ -452,22 +452,28 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             z_sample_list.append(seed)
             # seed = walk_seed(seed)
             if mode == 6:
-                seed, vector = vector_walk_seed(seed, vector, 6)
+                seed, vector = vector_walk_seed(seed, vector, 6, 0.0003)
             elif mode == 7:
-                seed, vector = vector_walk_seed(seed, vector, 7)
+                seed, vector = vector_walk_seed(seed, vector, 7, 0.0003)
             elif mode == 8:
                 seed = walk_seed(seed)
             elif mode == 9:
-                seed, vector = vector_walk_seed(seed, vector, 9)
+                seed, vector = vector_walk_seed(seed, vector, 9, 0.0003)
             elif mode == 11:
-                seed, vector = vector_walk_seed(seed, vector, 11)
+                seed, vector = vector_walk_seed(seed, vector, 11, 0.0003)
+            elif mode == 16:
+                seed, vector = vector_walk_seed(seed, vector, 7, 0.03)
+               
               
               # Generate batch images
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
 
         for i in range(config.batch_size):
-            save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+            if mode == 16:
+                save_name = 'Jump_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+            else:
+                save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
@@ -476,8 +482,8 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
                 return
 
 # Walk with a vector
-def vector_walk_seed(seed, vector, walk_mode):
-    maxVectorWalkStep = 0.0003 #0.0005  # PARAM
+def vector_walk_seed(seed, vector, walk_mode, max_step):
+    maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
     for idx in range(len(seed)):
