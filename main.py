@@ -31,6 +31,7 @@ flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputt
 flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
 flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space.")
 flags.DEFINE_float("max_jump_step", 0.03, "Maximum value for one step in jump in latent space (mode 16)")
+flags.DEFINE_float("min_jump_step", None, "Minimum value for one step in jump in latent space (mode 16)")
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 flags.DEFINE_string("checkpoint_name", None, "Name of the checkpoint file to load from e.g. DCGAN.model-183502")
 flags.DEFINE_string("interp_json", None, "Path to json file which contains the info needed to generate mode 10.")

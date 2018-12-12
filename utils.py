@@ -452,17 +452,17 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             z_sample_list.append(seed)
             # seed = walk_seed(seed)
             if mode == 6:
-                seed, vector = vector_walk_seed(seed, vector, 6, 0.0003)
+                seed, vector = vector_walk_seed(seed, vector, 6, 0.0003, None)
             elif mode == 7:
-                seed, vector = vector_walk_seed(seed, vector, 7, 0.0003)
+                seed, vector = vector_walk_seed(seed, vector, 7, 0.0003, None)
             elif mode == 8:
                 seed = walk_seed(seed)
             elif mode == 9:
-                seed, vector = vector_walk_seed(seed, vector, 9, 0.0003)
+                seed, vector = vector_walk_seed(seed, vector, 9, 0.0003, None)
             elif mode == 11:
-                seed, vector = vector_walk_seed(seed, vector, 11, 0.0003)
+                seed, vector = vector_walk_seed(seed, vector, 11, 0.0003, None)
             elif mode == 16:
-                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step)
+                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step)
                
               
               # Generate batch images
@@ -482,12 +482,18 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
                 return
 
 # Walk with a vector
-def vector_walk_seed(seed, vector, walk_mode, max_step):
-    maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
+def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
+    # maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
     for idx in range(len(seed)):
-        vectorWalkStep = random.uniform(-maxVectorWalkStep, maxVectorWalkStep)
+        if min_step == None:
+            vectorWalkStep = random.uniform(-max_step, max_step)
+        else:
+            diff = max_step - min_step
+            rand_step = random.uniform(-diff, diff)
+            vectorWalkStep = rand_step + (rand_step / abs(rand_step)) * min_step
+          
         if walk_mode == 11:
             if idx > 49:
                 vectorWalkStep = 0.0
