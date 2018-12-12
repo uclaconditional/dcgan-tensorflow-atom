@@ -490,6 +490,8 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step, temp_max_val=N
     # maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
+    max_vel = 0.1386 # PARAM
+    max_vel_perc = 0.2 # PARAM
     for idx in range(len(seed)):
         if min_step == None:
             vectorWalkStep = random.uniform(-max_step, max_step)
@@ -504,10 +506,18 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step, temp_max_val=N
                 vectorWalkStep = 0.0
         vector_cell = vector[idx] + vectorWalkStep
 
-        # if walk_mode == 16: # Cap velocity and push towards the center if around max/min
+        if walk_mode == 16: # Cap velocity and push towards the center if around max/min
+            vel_bound = max_vel * (1.0-max_vel_perc)
+            if vector_cell > vel_bound: # If near upper bound, needs to go lower dir
+                vector_cell = vector[idx] - abs(vectorWalkStep)
+            elif vector_cell < -vel_bound: # If near lower bound, needs to go higher dir
+                vector_cell = vector[idx] + abs(vectorWalkStep)
+
+        # Debug
         if abs(vector_cell) > temp_max_val and temp_max_val != None:
           temp_max_val = abs(vector_cell)
         print("Vector curr val: " + str(vector_cell))
+
         cell = seed[idx] + vector_cell
           
         if walk_mode == 6: # clamp mode
