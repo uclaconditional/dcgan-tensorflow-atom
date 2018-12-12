@@ -462,7 +462,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             elif mode == 11:
                 seed, vector = vector_walk_seed(seed, vector, 11, 0.0003)
             elif mode == 16:
-                seed, vector = vector_walk_seed(seed, vector, 7, 0.03)
+                seed, vector = vector_walk_seed(seed, vector, 16, 0.2)
                
               
               # Generate batch images
