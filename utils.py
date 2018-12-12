@@ -496,10 +496,14 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
             rand_step = random.uniform(-diff, diff)
             vectorWalkStep = rand_step + (rand_step / abs(rand_step)) * min_step
             # vectorWalkStep = random.uniform(-1.0, 1.0)
+
         if walk_mode == 11:
             if idx > 49:
                 vectorWalkStep = 0.0
         vector_cell = vector[idx] + vectorWalkStep
+
+        # if walk_mode == 16: # Cap velocity and push towards the center if around max/min
+        print("Vector curr val: " + str(vector_cell))
         cell = seed[idx] + vector_cell
           
         if walk_mode == 6: # clamp mode
