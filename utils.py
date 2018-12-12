@@ -473,7 +473,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
 
         for i in range(config.batch_size):
             if mode == 16:
-                save_name = 'Jump_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+                save_name = 'Jump_randSeed{}_{}_max{}_min{}_{:05d}'.format(rand_seed, time_stamp, config.max_jump_step, config.min_jump_step, walked)
             else:
                 save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
             img_path = config.sample_dir + "/" + save_name + '.png'
