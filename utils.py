@@ -504,7 +504,7 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
           
         if walk_mode == 6: # clamp mode
             cell = max(min(cell, 1.0), -1.0)
-        elif walk_mode == 7 or walk_mode == 11:
+        elif walk_mode == 7 or walk_mode == 11 or walk_mode == 16:
             if cell > 1: # Wrap mode
                 print("MEEE vector walk cell before: " + str(cell))
                 cell = -1 + (cell - 1)
