@@ -462,8 +462,9 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             elif mode == 11:
                 seed, vector = vector_walk_seed(seed, vector, 11, 0.0003, None)
             elif mode == 16:
-                # seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step)
-                seed = walk_seed(seed, config.max_jump_step)
+                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step)
+                
+                # seed = walk_seed(seed, config.max_jump_step)
                
               
               # Generate batch images
@@ -490,16 +491,16 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
     for idx in range(len(seed)):
         if min_step == None:
             vectorWalkStep = random.uniform(-max_step, max_step)
-            if walk_mode == 11:
-                if idx > 49:
-                    vectorWalkStep = 0.0
-            vector_cell = vector[idx] + vectorWalkStep
-            cell = seed[idx] + vector_cell
         else:
             diff = max_step - min_step
             rand_step = random.uniform(-diff, diff)
             vectorWalkStep = rand_step + (rand_step / abs(rand_step)) * min_step
-            vectorWalkStep = random.uniform(-1.0, 1.0)
+            # vectorWalkStep = random.uniform(-1.0, 1.0)
+        if walk_mode == 11:
+            if idx > 49:
+                vectorWalkStep = 0.0
+        vector_cell = vector[idx] + vectorWalkStep
+        cell = seed[idx] + vector_cell
           
         if walk_mode == 6: # clamp mode
             cell = max(min(cell, 1.0), -1.0)
