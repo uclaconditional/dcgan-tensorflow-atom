@@ -507,11 +507,13 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
         elif walk_mode == 7 or walk_mode == 11 or walk_mode == 16:
             if cell > 1: # Wrap mode
                 print("MEEE vector walk cell before: " + str(cell))
-                cell = -1 + (cell - 1)
+                frac, whole = math.modf(cell)
+                cell = -1 + frac
                 print("MEEE vector walk cell after: " + str(cell))
             elif cell < -1:
                 print("MEEE vector walk cell before: " + str(cell))
-                cell = 1 - (-1 - cell)
+                frac, whole = math.modf(cell)
+                cell = 1 + frac
                 print("MEEE vector walk cell after: " + str(cell))
         elif walk_mode == 9:
             if cell > 1 or cell < -1:
