@@ -528,7 +528,7 @@ def walk_seed(seed, max_step=0.035):
     result_seed = []
     for idx in range(len(seed)):
         random_cell = random.uniform(-maxWalkStep, maxWalkStep)
-        # print("MEEE random cell: " + str(random_cell))
+        print("MEEE random cell: " + str(random_cell))
         cell = seed[idx] + random_cell
         # print("MEEE updated cell: " + str(cell))
         # cell = np.clip(-1.0, 1.0, cell)
