@@ -463,7 +463,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             elif mode == 11:
                 seed, vector = vector_walk_seed(seed, vector, 11, 0.0003, None)
             elif mode == 16:
-                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step, temp_max_val)
+                seed, vector, temp_max_val = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step, temp_max_val)
                 
                 # seed = walk_seed(seed, config.max_jump_step)
                
