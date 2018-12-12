@@ -446,6 +446,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
     # Zero out half the vector if mode 11 and move 50/100 vectors
     if mode == 11:
         vector[50:] = np.zeros(50)
+    temp_max_val = 0.0
     while walked < walk_num:
         z_sample_list = []
         for i in range(config.batch_size):
@@ -462,7 +463,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             elif mode == 11:
                 seed, vector = vector_walk_seed(seed, vector, 11, 0.0003, None)
             elif mode == 16:
-                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step)
+                seed, vector = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step, temp_max_val)
                 
                 # seed = walk_seed(seed, config.max_jump_step)
                
@@ -481,10 +482,11 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
             walked += 1
             if walked >= walk_num:
+                print("Final temp_max_val: " + str(temp_max_val))
                 return
 
 # Walk with a vector
-def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
+def vector_walk_seed(seed, vector, walk_mode, max_step, min_step, temp_max_val=None):
     # maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
@@ -503,6 +505,8 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
         vector_cell = vector[idx] + vectorWalkStep
 
         # if walk_mode == 16: # Cap velocity and push towards the center if around max/min
+        if abs(vector_cell) > temp_max_val and temp_max_val != None:
+          temp_max_val = abs(vector_cell)
         print("Vector curr val: " + str(vector_cell))
         cell = seed[idx] + vector_cell
           
@@ -526,7 +530,7 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step):
         result_vector.append(vector_cell)
         result_seed.append(cell)
 
-    return result_seed, result_vector
+    return result_seed, result_vector, temp_max_val
 
 # Walk a single step for all 100 numbers in a seed
 def walk_seed(seed, max_step=0.035):
