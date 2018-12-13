@@ -490,7 +490,7 @@ def vector_walk_seed(seed, vector, walk_mode, max_step, min_step, temp_max_val=N
     # maxVectorWalkStep = max_step#0.0003 #0.0005  # PARAM
     result_vector = []
     result_seed = []
-    max_vel = 0.1386 # PARAM
+    max_vel = max_step * 27.3 # PARAM
     max_vel_perc = 0.2 # PARAM
     for idx in range(len(seed)):
         if min_step == None:
