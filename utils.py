@@ -453,7 +453,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
             z_sample_list.append(seed)
             # seed = walk_seed(seed)
             if mode == 6:
-                seed, vector = vector_walk_seed(seed, vector, 6, 0.0003, None)
+                seed, vector, temp_max_val = vector_walk_seed(seed, vector, 6, 0.0003, None)
             elif mode == 7:
                 seed, vector = vector_walk_seed(seed, vector, 7, 0.0003, None)
             elif mode == 8:
