@@ -101,7 +101,7 @@ def main(_):
         raise Exception("[!] Train a model first, then run test mode")
       mode = FLAGS.generation_mode
       if mode == 1: # Generate 300 random images and their seed value json files
-        generate_random_images(sess, dcgan, FLAGS, 500)
+        generate_random_images(sess, dcgan, FLAGS, 2000)
       elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
         generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
       elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
