@@ -133,6 +133,8 @@ def main(_):
         generate_sin_cycle_all_100(sess, dcgan, FLAGS)
       elif mode == 16: # Jump in latent space, velocity/acceleration with wrap mode
         generate_walk_in_latent_space(sess, dcgan, FLAGS, 16)
+      elif mode == 17:  # Generate continous interp A - B | C - D as defined in json file
+        generate_interps_from_json
 
 
       # Generate
