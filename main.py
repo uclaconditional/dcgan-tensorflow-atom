@@ -3,6 +3,7 @@ import scipy.misc
 import numpy as np
 from time import gmtime, strftime
 import json
+from shutils import copyfile
 
 from model import DCGAN
 from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk
@@ -113,6 +114,16 @@ def main(_):
       if "base_dir" in config_json:
         base_dir = config_json["base_dir"]
 
+      # Make dir with timestamp and update FLAGS.sample_dir
+      full_gen_path = "/".join((FLAGS.sample_dir, FLAGS.dataset_name + "-" + time_stamp))
+      if not os.path.exists(full_gen_path):
+          os.path.mkdir(full_gen_path)
+      FLAGS.sample_dir = full_gen_path
+      # Copy over config file for record keeping
+      gen_json_name = FLAGS.gen_json.split("/")[-1]
+      copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
+
+
       for cut in cuts:
         mode = cut["mode_num"]
         if mode == 1: # Generate continuous interpretation from a json file
@@ -127,6 +138,8 @@ def main(_):
           count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 6:  # A - B - C, lerp with wrap if closer
           count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+
+        # NOTE: Legacy modes
         # elif mode == 1: # Generate 300 random images and their seed value json files
         #   count = generate_random_images(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         # elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
