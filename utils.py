@@ -473,7 +473,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     if mode_num == 3:
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
-    elif mode_num == 4:
+    elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
 
     while stored_images < total_frame_num:
@@ -512,6 +512,21 @@ def sinusoidal_walk(phase_shift, t, cut):
     for i in range(result.shape[0]):
         result[i] = np.float32(s)*t + phase_shift[i]
     result = np.sin(result) * amplitude
+    return result
+
+def clamp_walk(walk_seed, cut):
+    max_speed = cut["max_walk_speed"]
+    clamp_boundary = cut["clamp_boundary"]
+    random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
+    walked_seeds = walk_seed + random_walk_val
+    result = np.zeros(walk_seed.shape, dtype=np.float32)
+    for i in range(result.shape[0]):
+        curr = walked_seeds[i]
+        if curr > clamp_boundary:
+            curr = clamp_boundary
+        if curr < -clamp_boundary:
+            curr = -clamp_boundary
+        result[i] = curr
     return result
 
 def wrap_walk(start_seed, walk_seed, cut):
