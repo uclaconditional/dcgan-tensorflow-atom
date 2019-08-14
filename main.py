@@ -115,7 +115,7 @@ def main(_):
         base_dir = config_json["base_dir"]
 
       # Make dir with timestamp and update FLAGS.sample_dir
-      full_gen_path = "/".join((FLAGS.sample_dir, FLAGS.dataset_name + "-" + time_stamp))
+      full_gen_path = "/".join((FLAGS.sample_dir, FLAGS.dataset + "-" + time_stamp))
       if not os.path.exists(full_gen_path):
           os.path.mkdir(full_gen_path)
       FLAGS.sample_dir = full_gen_path
