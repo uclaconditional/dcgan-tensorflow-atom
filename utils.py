@@ -485,6 +485,8 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, cut)
+            elif mode_num == 5:
+                curr_seed = clamp_walk(curr_seed, cut)
             batch_seeds[batch_idx] = curr_seed
             batch_idx += 1
             num_queued_images += 1
