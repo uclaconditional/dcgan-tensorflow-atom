@@ -165,7 +165,7 @@ def main(_):
           count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
         elif mode == 17:  # Generate continous interp A - B | C - D as defined in json file
           # generate_interps_from_json(sess, dcgan, FLAGS)
-          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
 
 
       # Save config file to gen folder
