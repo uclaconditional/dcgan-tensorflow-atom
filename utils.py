@@ -795,15 +795,18 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
         while batch_idx < config.batch_size:
             interp_idx = num_queued_images % steps_per_interp
             steps_per_interp_mode = steps_per_interp
-            if mode_num == 2:  # And not last frame
+            if mode_num == 2 or mode_num == 6:  # And not last frame
                 steps_per_interp_mode = steps_per_interp + 1
 
             ratio = np.linspace(0, 1, steps_per_interp_mode)[interp_idx]
             ratio = np.float32(ratio)
             print(" ratio: " + str(ratio))
 
-            slerped_z = slerp(ratio, z1, z2)
-            batch_seeds[batch_idx] = slerped_z
+            if mode_num == 1 or mode_num == 2:
+              lerped_z = slerp(ratio, z1, z2)
+            else:  # Mode 6
+              lerped_z = lerp(ratio, z1, z2)
+            batch_seeds[batch_idx] = lerped_z
             batch_idx += 1
             num_queued_images += 1
             if num_queued_images % steps_per_interp == 0:
@@ -825,20 +828,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
 
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
-                # print("z1: " + str(z1) + " type z1: " + str(type(z1)))
 
-
-                # if is_cut:
-                    # z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
-                # else:
-                    # z1 = z2
-                # z2 = np.asarray(rand_batch_z[0, :])
-                # print("MEEE newly assigned z1: " + str(z1))
-                # print("MEEE newly gen uniform z2: " + str(z2))
-
-        # np_batch_seeds = np.asarray(batch_seeds, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
-        # samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: np_batch_seeds})
 
         # Naming
         for i in range(config.batch_size):
@@ -852,6 +843,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
             if stored_images >= total_frame_num:
                 return count
     return count
+
+def lerp(val, low, high):
+    return low + (high - low) * val
 
 def slerp(val, low, high):
     """Code from https://github.com/soumith/dcgan.torch/issues/14"""
