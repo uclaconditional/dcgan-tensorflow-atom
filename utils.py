@@ -433,7 +433,7 @@ def generate_sin_cycle(sess, dcgan, config, time_stamp, cut, count):
 
 
 
-def generate_walk_in_latent_space(sess, dcgan, config, time_stamp, cut, count):
+def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut, count):
     walk_num = cut["total_frame_num"]
     mode = cut["mode_num"]
     starting_image_path = cut["starting_image"]
