@@ -457,13 +457,13 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
 # Newer version to match PGAN standard
 def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
-    params = cut["params"]
+    # params = cut["params"]
     mode_num = cut["mode_num"]
 
     stored_images = 0
     num_queued_images = 0
-    start_image_json = params["start_image"]
-    total_frame_num = params["total_frame_num"]
+    start_image_json = cut["start_image"]
+    total_frame_num = cut["total_frame_num"]
     base_json_path = base_dir
 
     with open("/".join((base_json_path, start_image_json)) + ".json") as f:
@@ -478,7 +478,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
     while stored_images < total_frame_num:
         batch_idx = 0
-        batch_seeds = np.zeros(shape=(config.batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
+        batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
         while batch_idx < config.batch_size:
             if mode_num == 3:
                 sin_seed = sinusoidal_walk(offset_seed, num_queued_images, cut)
