@@ -121,6 +121,8 @@ def main(_):
           count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 3:  # Sinusoidal Oscillation
           count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 4:  # Sinusoidal Oscillation
+          count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         # elif mode == 1: # Generate 300 random images and their seed value json files
         #   count = generate_random_images(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         # elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D

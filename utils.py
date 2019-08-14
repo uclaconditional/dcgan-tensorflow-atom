@@ -515,26 +515,25 @@ def sinusoidal_walk(phase_shift, t, cut):
     return result
 
 def wrap_walk(start_seed, walk_seed, cut):
-    wrap_buffer_size = cut["wrap_buffer_size"]
+    # wrap_buffer_size = cut["wrap_buffer_size"]
     max_speed = cut["max_walk_speed"]
     random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
     for i in range(result.shape[0]):
         curr = walked_seeds[i]
-        max_boundary = start_seed[i] + wrap_buffer_size
-        min_boundary = start_seed[i] - wrap_buffer_size
-        if i == 13:
-            print("min: " + str(min_boundary) + " max: " + str(max_boundary) + " before: " + str(curr))
+        if curr > 1.0:
+          curr = -1.0 + (curr - 1.0)
+        if curr < -1.0:
+          curr = 1.0 + (curr - 1.0)
         result[i] = curr
-        if curr > max_boundary:
-            print("cut")
-            result[i] = min_boundary + (curr - max_boundary)
-        if curr < min_boundary:
-            print("cut")
-            result[i] = max_boundary + (curr - min_boundary)
-        if i == 13:
-            print("after: " + str(result[13]))
+        # max_boundary = start_seed[i] + wrap_buffer_size
+        # min_boundary = start_seed[i] - wrap_buffer_size
+        # result[i] = curr
+        # if curr > max_boundary:
+        #     result[i] = min_boundary + (curr - max_boundary)
+        # if curr < min_boundary:
+        #     result[i] = max_boundary + (curr - min_boundary)
     return result
 
 # Legacy latent walk modes, has legacy naming convention
