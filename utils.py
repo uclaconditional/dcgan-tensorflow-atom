@@ -214,10 +214,11 @@ def encode(sess, dcgan, config):
       #   sample_inputs = np.array(sample).astype(np.float32)
 
 
-def generate_random_images(sess, dcgan, config, num_images):
+def generate_random_images(sess, dcgan, config, time_stamp, cut, count):
+  num_images = cut["num_frame_num"]
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
-  time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+  # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
   while 1:
     values = np.arange(0, 1, 1./config.batch_size)
@@ -234,7 +235,8 @@ def generate_random_images(sess, dcgan, config, num_images):
         if idx + 1 > num_images:
             return
 
-        save_name = 'RandGen_{}_{:05d}'.format(time_stamp , idx)
+        save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+        count += 1
         img_path = config.sample_dir + "/" + save_name + '.png'
         json_path = config.sample_dir + "/" + save_name + '.json'
         print("img path rand gen: " + img_path);
@@ -245,6 +247,7 @@ def generate_random_images(sess, dcgan, config, num_images):
         with open(json_path, 'w') as outfile:
             json.dump(rand_seed, outfile)
         idx += 1
+    return count
 
 def generate_image_from_seed(sess, dcgan, config):
     json_path = config.input_seed_path
@@ -270,12 +273,14 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
-def generate_single_value_changes(sess, dcgan, config, change_idx_num):
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    json_path = config.input_seed_path
+def generate_single_value_changes(sess, dcgan, config, time_stamp, cut, count):
+    change_idx_num = cut["change_idx_num"]
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    starting_image_path = cut["starting_image"]
+    # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
-    if json_path:
-        with open(json_path, 'r') as f:
+    if starting_image_path:
+        with open(starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
@@ -291,8 +296,8 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
             print("seed[0]: " + str(seed[0]) + " step: " + str(step))
         step *= 10
         # Reset json
-        if json_path:
-            with open(json_path, 'r') as f:
+        if starting_image_path:
+            with open(starting_image_path, 'r') as f:
                 seed = json.load(f)
             print("MEEE seed read: " + str(seed))
         else:
@@ -309,27 +314,33 @@ def generate_single_value_changes(sess, dcgan, config, change_idx_num):
     saved_idx = 0
     for i in range(5):
         for j in range(10):
-            save_name = 'mode11_{}_altIdx{}_{}_{:02d}'.format(time_stamp, change_idx_num, str(5-i), j)
+            # save_name = '{}_{}_{}_{:02d}'.format(time_stamp, change_idx_num, str(5-i), j)
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
             print(Fore.CYAN + "MEEE mode12 image generated: " + img_path)
             saved_idx+=1
+    return count
 
-def generate_sin_cycle_all_100(sess, dcgan, config):
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    json_path = config.input_seed_path
+def generate_sin_cycle_all_100(sess, dcgan, config, time_stamp, cut, count):
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    starting_image_path = cut["starting_image"]
+    # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
-    if json_path:
-        with open(json_path, 'r') as f:
+    if starting_image_path:
+        with open(starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     orig_seed = seed[:]
-    sin_cycle_json_path = config.sin_cycle_json
+    # sin_cycle_json_path = config.sin_cycle_json
+    # sin_cycle_json_path = cut["params"]
     z_sample_list = []
     num_cycles = 2
-    frames_per_cycle = 30 * 6# PARAM one cycle in 6 seconds
+    # frames_per_cycle = 30 * 6# PARAM one cycle in 6 seconds
+    frames_per_cycle = cut["params"]["frames_per_cycle"]
     num_total_frames = frames_per_cycle * 100
     # num_frames_per_number = frames_per_cycle * num_cycles
     sin_step = (2 * math.pi) / frames_per_cycle
@@ -351,43 +362,49 @@ def generate_sin_cycle_all_100(sess, dcgan, config):
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
-            save_name = 'Sin_cycle_all_100_{}_{:05d}'.format(time_stamp, saved_frame)
+            # save_name = 'Sin_cycle_all_100_{}_{:05d}'.format(time_stamp, saved_frame)
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
             img_path = config.sample_dir + "/" + save_name + '.png'
-            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            # scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE sin cycle all 100 image generated: " + img_path)
             saved_frame += 1
             if saved_frame >= num_total_frames:
-                return
-    
-def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle, mode):
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    json_path = config.input_seed_path
+                return count
+    return count
+
+def generate_sin_cycle(sess, dcgan, config, time_stamp, cut, count):
+    num_cycles = cut["num_cycles"]
+    seconds_per_cycle = cut["seconds_per_cycle"]
+    mode = cut["mode_num"]
+    starting_image_path = cut["starting_image"]
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
-    if json_path:
-        with open(json_path, 'r') as f:
+    if starting_image_path:
+        with open(starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
-    frames_per_cycle = 30 * seconds_per_cycle # PARAM one cycle in 10 seconds
+    frames_per_cycle = 30 * seconds_per_cycle  # PARAM one cycle in 10 seconds
     num_total_frames = frames_per_cycle * num_cycles
     sin_step = (2 * math.pi) / frames_per_cycle
     saved_frame = 0
     curr_frame = 0
 
-    sin_cycle_json_path = config.sin_cycle_json
-    cycle_data = None
+    # sin_cycle_json_path = config.sin_cycle_json
+    # cycle_data = cut["cycle_data"]
     if mode == 14:
-        if sin_cycle_json_path:
-            with open(sin_cycle_json_path, 'r') as f:
-                cycle_json = json.load(f)
-            print("MEEE cycle data read: " + str(cycle_json))
-        else:
-            print(Fore.RED + "MEEE WARNING: sin cycle json is None.")
-        num_total_frames = cycle_json["overall_length"]
-        cycle_data = cycle_json["data"]
-        
+        # if "cycle_data" in cut:
+        #     # with open(sin_cycle_json_path, 'r') as f:
+        #     #     cycle_json = json.load(f)
+        #     print("MEEE cycle data read: " + str(cycle_data))
+        # else:
+        #     print(Fore.RED + "MEEE WARNING: sin cycle data is None.")
+        num_total_frames = cut["overall_length"]
+        cycle_data = cut["data"]
+
 
     while curr_frame < num_total_frames:
         z_sample_list = []
@@ -403,25 +420,31 @@ def generate_sin_cycle(sess, dcgan, config, num_cycles, seconds_per_cycle, mode)
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
-            save_name = 'Sin_cycle_withJson_{}_{:05d}'.format(time_stamp, saved_frame)
+            # save_name = 'Sin_cycle_withJson_{}_{:05d}'.format(time_stamp, saved_frame)
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE sin cycle image generated: " + img_path)
             saved_frame += 1
             if saved_frame >= num_total_frames:
-                return
+                return count
+    return count
 
 
 
-def generate_walk_in_latent_space(sess, dcgan, config, mode):
-    walk_num = config.walk_num
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    json_path = config.input_seed_path
-    json_file_name = json_path.split("/")[-1]
-    json_file_name = json_file_name.split(".")[0]
+def generate_walk_in_latent_space(sess, dcgan, config, time_stamp, cut, count):
+    walk_num = cut["total_frame_num"]
+    mode = cut["mode_num"]
+    starting_image_path = cut["starting_image"]
+    max_vector_length = cut["params"]["max_vector_length"]
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    # json_path = config.input_seed_path
+    # json_file_name = starting_image_path.split("/")[-1]
+    # json_file_name = json_file_name.split(".")[0]
     seed = [] # Will be reassigned before use
-    if json_path:
-        with open(json_path, 'r') as f:
+    if starting_image_path:
+        with open(starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
@@ -441,7 +464,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
     #   print(Fore.CYAN + "MEEE saved rand state json: " + rand_state_json_path)
 
     walked = 0
-    max_vector_length = 0.003 #0.005 # PARAM
+    # max_vector_length = 0.003 #0.005 # PARAM
     vector = np.random.uniform(-max_vector_length, max_vector_length, size=(1, dcgan.z_dim))[0]
     # Zero out half the vector if mode 11 and move 50/100 vectors
     if mode == 11:
@@ -464,26 +487,27 @@ def generate_walk_in_latent_space(sess, dcgan, config, mode):
                 seed, vector = vector_walk_seed(seed, vector, 11, 0.0003, None)
             elif mode == 16:
                 seed, vector, temp_max_val = vector_walk_seed(seed, vector, 16, config.max_jump_step, config.min_jump_step, temp_max_val)
-                
+
                 # seed = walk_seed(seed, config.max_jump_step)
-               
-              
+
+
               # Generate batch images
         z_sample = np.asarray(z_sample_list, dtype=np.float32)
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
 
         for i in range(config.batch_size):
             if mode == 16:
-                save_name = 'Jump_randSeed{}_{}_max{}_min{}_{:05d}'.format(rand_seed, time_stamp, config.max_jump_step, config.min_jump_step, walked)
+                save_name = 'Jump_randSeed{}_{}_max{}_min{}_{:05d}'.format(rand_seed, time_stamp, cut["max_jump_step"], cut["min_jump_step"], walked)
             else:
-                save_name = 'Walk_randSeed{}_{}_{:05d}'.format(rand_seed, time_stamp , walked)
+                save_name = '{}_{}_{}_{:05d}'.format(config.dataset, rand_seed, time_stamp , count)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
             walked += 1
             if walked >= walk_num:
                 print("Final temp_max_val: " + str(temp_max_val))
-                return
+                return count
+    return count
 
 # Walk with a vector
 def vector_walk_seed(seed, vector, walk_mode, max_step, min_step, temp_max_val=None):
@@ -561,11 +585,25 @@ def walk_seed(seed, max_step=0.035):
     # print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
-def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_cut, is_rand_steps_per_interp):
-    steps_per_interp = 32 # 16   # PARAM
+def generate_continuous_random_interps(sess, dcgan, config, time_stamp, cut, count):
+    total_frame_num = cut["total_frame_num"]
+    mode = cut["mode_num"]
+    if mode == 2:
+      is_cut, is_rand_steps_per_interp = True, True
+    elif mode == 3:
+      is_cut, is_rand_steps_per_interp = True, False
+    elif mode == 4:
+      is_cut, is_rand_steps_per_interp = False, True
+    elif mode == 5:
+      is_cut, is_rand_steps_per_interp = False, False
+    else:
+      is_cut, is_rand_steps_per_interp = None, None
+
+    # steps_per_interp = 32 # 16   # PARAM
+    steps_per_interp = cut["steps_per_interp"]  # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
     z1 = np.asarray(rand_batch_z[0, :])
     z2 = np.asarray(rand_batch_z[1, :])
@@ -611,26 +649,28 @@ def generate_continuous_random_interps(sess, dcgan, config, total_frame_num, is_
 
         # Naming
         for i in range(config.batch_size):
-            save_name = 'ContinuousInterp_{}_{:05d}'.format(time_stamp , stored_images)
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
             stored_images += 1
             if stored_images >= total_frame_num:
-                return
+                return count
+    return count
 
-def generate_continuous_interps_from_json(sess, dcgan, config):
+def generate_continuous_interps_from_json(sess, dcgan, config, time_stamp, cut, count):
 
     # Read interp json
-    with open(config.interp_json, 'r') as f:
-        interp_data = json.load(f)
+    # with open(config.interp_json, 'r') as f:
+    #     interp_data = json.load(f)
+    interp_data = cut["data"]
 
-    steps_per_interp = interp_data["data"][0][2] # 16   # PARAM
+    steps_per_interp = interp_data[0][2] # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
-    time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
-    base_json_path = interp_data["base_dir"]
+    base_json_path = cut["base_dir"] # NOTE: Should pass in from main?
     seedA = []
     seedB = []
     with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
@@ -639,8 +679,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
         seedB = json.load(f)
 
     total_frame_num = 0
-    for i in range(len(interp_data["data"])):
-        total_frame_num += interp_data["data"][i][2]
+    for i in range(len(interp_data)):
+        total_frame_num += interp_data[i][2]
 
     # print("MEEE total frame num : " + str(total_frame_num))
     # z_sample_list = []
@@ -694,24 +734,24 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
                 curr_cut_idx += 1
                 # print("loading curr cur idx: " + str(curr_cut_idx))
                 # print("num_queued_images: " + str(num_queued_images))
-                if curr_cut_idx >= len(interp_data["data"]):
+                if curr_cut_idx >= len(interp_data):
                     continue
-                steps_per_interp = interp_data["data"][curr_cut_idx][2]
+                steps_per_interp = interp_data[curr_cut_idx][2]
                 num_queued_images = 0
                 # if is_rand_steps_per_interp:
                     # steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
                 rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
                 # Read new json to z1
-                
-                with open(base_json_path + '/' + interp_data["data"][curr_cut_idx][0] + ".json", 'r') as f:
+
+                with open(base_json_path + '/' + interp_data[curr_cut_idx][0] + ".json", 'r') as f:
                     seedA = json.load(f)
-                with open(base_json_path + '/' + interp_data["data"][curr_cut_idx][1] + ".json", 'r') as f:
+                with open(base_json_path + '/' + interp_data[curr_cut_idx][1] + ".json", 'r') as f:
                     seedB = json.load(f)
-                
+
                 z1 = np.asarray(seedA, dtype=np.float32)
                 z2 = np.asarray(seedB, dtype=np.float32)
                 # print("z1: " + str(z1) + " type z1: " + str(type(z1)))
-                
+
 
                 # if is_cut:
                     # z1 = np.asarray(rand_batch_z[1, :]) #PARAM A - B - C or A - B | C - D
@@ -727,7 +767,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
 
         # Naming
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.interp_json[:-5], time_stamp , stored_images)
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            count += 1
+            # TODO: Create timestampt dir
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
@@ -736,7 +778,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config):
             # print("total framenum: " + str(total_frame_num))
             if stored_images >= total_frame_num:
                 print("MEEE Should return!!")
-                return
+                return count
+    return count
 
 def slerp(val, low, high):
     """Code from https://github.com/soumith/dcgan.torch/issues/14"""

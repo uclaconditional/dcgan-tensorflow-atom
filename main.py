@@ -1,9 +1,11 @@
 import os
 import scipy.misc
 import numpy as np
+from time import gmtime, strftime
+import json
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_interps_from_json
 
 import tensorflow as tf
 
@@ -35,6 +37,7 @@ flags.DEFINE_float("min_jump_step", None, "Minimum value for one step in jump in
 flags.DEFINE_integer("generation_mode", 1, "Generation mode used in testing. Please refer to README.txt")
 flags.DEFINE_string("checkpoint_name", None, "Name of the checkpoint file to load from e.g. DCGAN.model-183502")
 flags.DEFINE_string("interp_json", None, "Path to json file which contains the info needed to generate mode 10.")
+flags.DEFINE_string("gen_json", None, "Path to json file which contains the info needed to generate multiple modes.")
 flags.DEFINE_string("sin_cycle_json", None, "Path to json file which contains the info needed to generate mode 14.")
 FLAGS = flags.FLAGS
 
@@ -99,43 +102,70 @@ def main(_):
     else:
       if not dcgan.load(FLAGS.checkpoint_dir)[0]:
         raise Exception("[!] Train a model first, then run test mode")
+      # Load Config json file
       mode = FLAGS.generation_mode
-      if mode == 1: # Generate 300 random images and their seed value json files
-        generate_random_images(sess, dcgan, FLAGS, 2000)
-      elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
-      elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, False)
-      elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, True)
-      elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C
-        generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, False)
-      # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
-      elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
-      elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 7)
-      elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 8)
-      elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
-      elif mode == 10: # Generate continuous interpretation from a json file
-        generate_continuous_interps_from_json(sess, dcgan, FLAGS)
-      elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
-      elif mode == 12: # 10th to 100000th digit change for 1st number of seed
-        generate_single_value_changes(sess, dcgan, FLAGS, 2)
-      elif mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
-        generate_sin_cycle(sess, dcgan, FLAGS, 2, 10, 13)
-      elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
-        generate_sin_cycle(sess, dcgan, FLAGS, 1, 1, 14)
-      elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
-        generate_sin_cycle_all_100(sess, dcgan, FLAGS)
-      elif mode == 16: # Jump in latent space, velocity/acceleration with wrap mode
-        generate_walk_in_latent_space(sess, dcgan, FLAGS, 16)
-      elif mode == 17:  # Generate continous interp A - B | C - D as defined in json file
-        generate_interps_from_json
+      gen_json_file = FLAGS.gen_json
+      with open(gen_json_file, 'r') as f:
+        config_json = json.load(f)
+      cuts = config_json["data"]
+      count = 0
+      time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
+      for cut in cuts:
+        if mode == 1: # Generate 300 random images and their seed value json files
+          # generate_random_images(sess, dcgan, FLAGS, 2000)
+          count = generate_random_images(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
+          # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, True)
+          count = generate_continuous_random_interps(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
+          # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, True, False)
+          count = generate_continuous_random_interps(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C
+          count = generate_continuous_random_interps(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C
+          # generate_continuous_random_interps(sess, dcgan, FLAGS, 2700, False, False)
+          count = generate_continuous_random_interps(sess, dcgan, FLAGS, time_stamp, cut, count)
+        # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
+        elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 7)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 8)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 10: # Generate continuous interpretation from a json file
+          # generate_continuous_interps_from_json(sess, dcgan, FLAGS)
+          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 11)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 12: # 10th to 100000th digit change for 1st number of seed
+          # generate_single_value_changes(sess, dcgan, FLAGS, 2)
+          count = generate_single_value_changes(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
+          # generate_sin_cycle(sess, dcgan, FLAGS, 2, 10, 13)
+          count = generate_sin_cycle(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
+          # generate_sin_cycle(sess, dcgan, FLAGS, 1, 1, 14)
+          count = generate_sin_cycle(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
+          # generate_sin_cycle_all_100(sess, dcgan, FLAGS)
+          count = generate_sin_cycle_all_100(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 16: # Jump in latent space, velocity/acceleration with wrap mode
+          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 16)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+        elif mode == 17:  # Generate continous interp A - B | C - D as defined in json file
+          # generate_interps_from_json(sess, dcgan, FLAGS)
+          count = generate_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)
+
+
+      # Save config file to gen folder
 
       # Generate
       # generate_image_from_seed(sess, dcgan, FLAGS)
