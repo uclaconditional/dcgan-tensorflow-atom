@@ -299,7 +299,8 @@ def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut
         step *= 10
         # Reset json
         if starting_image_path:
-            with open(starting_image_path, 'r') as f:
+            full_starting_image_path = "/".join((base_dir, starting_image_path + ".json"))
+            with open(full_starting_image_path, 'r') as f:
                 seed = json.load(f)
             print("MEEE seed read: " + str(seed))
         else:
@@ -337,7 +338,8 @@ def generate_sin_cycle_all_100(sess, dcgan, config, base_dir, time_stamp, cut, c
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
     if starting_image_path:
-        with open(starting_image_path, 'r') as f:
+        full_starting_image_path = "/".join((base_dir, starting_image_path + ".json"))
+        with open(full_starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
@@ -395,7 +397,8 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
     if starting_image_path:
-        with open(starting_image_path, 'r') as f:
+        full_starting_image_path = "/".join((base_dir, starting_image_path + ".json"))
+        with open(full_starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
