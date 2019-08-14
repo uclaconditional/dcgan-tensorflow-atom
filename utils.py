@@ -663,7 +663,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config, time_stamp, cut, 
     # Read interp json
     # with open(config.interp_json, 'r') as f:
     #     interp_data = json.load(f)
-    interp_data = cut["data"]
+    interp_data = cut["mode_data"]
 
     steps_per_interp = interp_data[0][2] # 16   # PARAM
     stored_images = 0
