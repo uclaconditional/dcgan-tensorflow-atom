@@ -5,7 +5,7 @@ from time import gmtime, strftime
 import json
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk
 
 import tensorflow as tf
 
@@ -115,40 +115,44 @@ def main(_):
 
       for cut in cuts:
         mode = cut["mode_num"]
-        if mode == 1: # Generate 300 random images and their seed value json files
-          count = generate_random_images(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
-          count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
-          count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C
-          count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C
-          count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
-        elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 10: # Generate continuous interpretation from a json file
+        if mode == 1: # Generate continuous interpretation from a json file
           count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 12: # 10th to 100000th digit change for 1st number of seed
-          count = generate_single_value_changes(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
-          count = generate_sin_cycle(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        # elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
+        elif mode == 2: # Generate continuous interpretation from a json file
+          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 3:  # Sinusoidal Oscillation
+          count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 1: # Generate 300 random images and their seed value json files
+        #   count = generate_random_images(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 2: # Generate 1.5 min random num of frames per interpolation. With cut: A - B | C - D
+        #   count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 3: # Generate 1.5 min 32 frames per interpolation. With cut: A - B | C - D
+        #   count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 4: # Generate 1.5 min random num of frames per interpolation. With cut: A - B - C
+        #   count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 5: # Generate 1.5 min 32 frames per interpolation. With cut: A - B - C
+        #   count = generate_continuous_random_interps(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
+        # elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
+        #   count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
+        #   count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
+        #   count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
+        #   count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 11: # Walk in latent space, velocity/acceleration wrap mode, only update 50 out of 100 values
+        #   count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 12: # 10th to 100000th digit change for 1st number of seed
+        #   count = generate_single_value_changes(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 13: # Sinusoidal cycling of first value, 2 cycles, 10 seconds per cycle
         #   count = generate_sin_cycle(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
-          count = generate_sin_cycle_all_100(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 16: # Jump in latent space, velocity/acceleration with wrap mode
-          # generate_walk_in_latent_space(sess, dcgan, FLAGS, 16)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # # elif mode == 14: # Sinusoidal cycling of values specified by json (--sin_cycle_json)
+        # #   count = generate_sin_cycle(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 15: # Sinusoidal cycling through all 100 numbers, 6s percycle
+        #   count = generate_sin_cycle_all_100(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        # elif mode == 16: # Jump in latent space, velocity/acceleration with wrap mode
+        #   # generate_walk_in_latent_space(sess, dcgan, FLAGS, 16)
+          # count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
 
 
       # Save config file to gen folder

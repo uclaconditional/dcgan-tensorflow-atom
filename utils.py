@@ -455,7 +455,89 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
     return count
 
 
+# Newer version to match PGAN standard
+def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
+    params = cut["params"]
+    mode_num = cut["mode_num"]
 
+    stored_images = 0
+    num_queued_images = 0
+    start_image_json = params["start_image"]
+    total_frame_num = params["total_frame_num"]
+    base_json_path = base_dir
+
+    with open("/".join((base_json_path, start_image_json)) + ".json") as f:
+        start_seed = json.load(f)
+
+    start_seed = np.asarray(start_seed, dtype=np.float32)
+    if mode_num == 3:
+        sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
+        offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
+    elif mode_num == 4:
+        curr_seed = start_seed
+
+    while stored_images < total_frame_num:
+        batch_idx = 0
+        batch_seeds = np.zeros(shape=(config.batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
+        while batch_idx < config.batch_size:
+            if mode_num == 3:
+                sin_seed = sinusoidal_walk(offset_seed, num_queued_images, cut)
+                curr_seed = start_seed + sin_seed
+            elif mode_num == 4:
+                curr_seed = wrap_walk(start_seed, curr_seed, cut)
+            batch_seeds[batch_idx] = curr_seed
+            batch_idx += 1
+            num_queued_images += 1
+        # labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
+
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+
+        # Save
+        for i in range(config.batch_size):
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            count += 1
+            img_path = config.sample_dir + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "Image saved: " + img_path)
+            stored_images += 1
+            if stored_images >= total_frame_num:
+                print(Fore.CYAN + "Done !")
+                return count
+    return count
+
+def sinusoidal_walk(phase_shift, t, cut):
+    amplitude = cut["amplitude"]
+    s = cut["speed"]
+    result = np.zeros(phase_shift.shape, dtype=np.float32)
+    for i in range(result.shape[0]):
+        result[i] = np.float32(s)*t + phase_shift[i]
+    result = np.sin(result) * amplitude
+    return result
+
+def wrap_walk(start_seed, walk_seed, cut):
+    wrap_buffer_size = cut["wrap_buffer_size"]
+    max_speed = cut["max_walk_speed"]
+    random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
+    walked_seeds = walk_seed + random_walk_val
+    result = np.zeros(walk_seed.shape, dtype=np.float32)
+    for i in range(result.shape[0]):
+        curr = walked_seeds[i]
+        max_boundary = start_seed[i] + wrap_buffer_size
+        min_boundary = start_seed[i] - wrap_buffer_size
+        if i == 13:
+            print("min: " + str(min_boundary) + " max: " + str(max_boundary) + " before: " + str(curr))
+        result[i] = curr
+        if curr > max_boundary:
+            print("cut")
+            result[i] = min_boundary + (curr - max_boundary)
+        if curr < min_boundary:
+            print("cut")
+            result[i] = max_boundary + (curr - min_boundary)
+        if i == 13:
+            print("after: " + str(result[13]))
+    return result
+
+# Legacy latent walk modes, has legacy naming convention
 def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut, count):
     walk_num = cut["total_frame_num"]
     mode = cut["mode_num"]
@@ -683,17 +765,13 @@ def generate_continuous_random_interps(sess, dcgan, config, base_dir, time_stamp
 
 def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
-    # Read interp json
-    # with open(config.interp_json, 'r') as f:
-    #     interp_data = json.load(f)
+    mode_num = cut["mode_num"]
     interp_data = cut["mode_data"]
 
     steps_per_interp = interp_data[0][2] # 16   # PARAM
     stored_images = 0
     num_queued_images = 0
-    # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
-    # base_json_path = cut["base_dir"] # NOTE: Should pass in from main?
     base_json_path = base_dir
     seedA = []
     seedB = []
@@ -706,58 +784,32 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
     for i in range(len(interp_data)):
         total_frame_num += interp_data[i][2]
 
-    # print("MEEE total frame num : " + str(total_frame_num))
-    # z_sample_list = []
-    # for i in range(config.batch_size):
-        # z_sample_list.append(seed)
-
-    # z_sample = np.asarray(z_sample_list, dtype=np.float32)
     curr_cut_idx = 0
 
     rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
-    # z1 = np.asarray(rand_batch_z[0, :])
-    # z2 = np.asarray(rand_batch_z[1, :])
     z1 = np.asarray(seedA, dtype=np.float32)
     z2 = np.asarray(seedB, dtype=np.float32)
-    # print("z1: " + str(z1))
     while stored_images < total_frame_num:
-    # for i in range(len(interp_data["data"])):
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
-        # batch_seeds = []
 
         while batch_idx < config.batch_size:
             interp_idx = num_queued_images % steps_per_interp
-            # print("interp_idx: " + str(interp_idx))
-            # for i, ratio in enumerate(np.linspace(0, 1, steps_per_interp)):
-            ratio = np.linspace(0, 1, steps_per_interp)[interp_idx]
+            steps_per_interp_mode = steps_per_interp
+            if mode_num == 2:  # And not last frame
+                steps_per_interp_mode = steps_per_interp + 1
+
+            ratio = np.linspace(0, 1, steps_per_interp_mode)[interp_idx]
             ratio = np.float32(ratio)
-            # print("linspace:")
-            # print(str(np.linspace(0, 1, steps_per_interp)))
-            # print("i: " + str(i) + " ratio: " + str(ratio))
             print(" ratio: " + str(ratio))
 
             slerped_z = slerp(ratio, z1, z2)
-            # slerped_z = z1 * (1.0 - ratio) + z2 * ratio
-            # slerped_z = seedA
-            # print("slerped_z: " + str(slerped_z))
-            # print("MEEE ratio: " + str(ratio) + " z1: " + str(z1.shape) + " z2: " + str(z2.shape))
-            # batch_seeds = np.append(batch_seeds, [slerped_z], axis=0)
-            # print("MEEE batch_idx: " + str(batch_idx))
             batch_seeds[batch_idx] = slerped_z
-            # batch_seeds.append(slerped_z[:])
-            # print("MEEE batch_seeds: " + str(batch_seeds.shape) + " , slerped_z: " + str(slerped_z.shape))
             batch_idx += 1
             num_queued_images += 1
-
-                # if batch_idx >= config.batch_size:
-                #     break
-
             if num_queued_images % steps_per_interp == 0:
                 # interp_frame_nums = [8, 16, 32, 8, 25, 36, 85, 7, 16, 10, 40, 10, 30, 20, 30, 34, 50, 25, 50, 100, 120, 250, 300, 512]
                 curr_cut_idx += 1
-                # print("loading curr cur idx: " + str(curr_cut_idx))
-                # print("num_queued_images: " + str(num_queued_images))
                 if curr_cut_idx >= len(interp_data):
                     continue
                 steps_per_interp = interp_data[curr_cut_idx][2]
@@ -796,12 +848,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
             # TODO: Create timestampt dir
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
-            print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
+            print(Fore.CYAN + "Continuous random interp image generated: " + img_path)
             stored_images += 1
-            # print("stored images: " + str(stored_images))
-            # print("total framenum: " + str(total_frame_num))
             if stored_images >= total_frame_num:
-                print("MEEE Should return!!")
                 return count
     return count
 
