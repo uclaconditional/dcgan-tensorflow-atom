@@ -650,6 +650,7 @@ def generate_continuous_random_interps(sess, dcgan, config, time_stamp, cut, cou
         # Naming
         for i in range(config.batch_size):
             save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE Continuous random interp image generated: " + img_path)
