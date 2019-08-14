@@ -112,6 +112,7 @@ def main(_):
       time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
       for cut in cuts:
+        mode = cut["mode_num"]
         if mode == 1: # Generate 300 random images and their seed value json files
           # generate_random_images(sess, dcgan, FLAGS, 2000)
           count = generate_random_images(sess, dcgan, FLAGS, time_stamp, cut, count)
