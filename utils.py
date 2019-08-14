@@ -276,7 +276,7 @@ def generate_image_from_seed(sess, dcgan, config):
 def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
     change_idx_num = cut["change_idx_num"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    starting_image_path = cut["starting_image"]
+    starting_image_path = cut["start_image"]
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
     if starting_image_path:
@@ -334,7 +334,7 @@ def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut
 
 def generate_sin_cycle_all_100(sess, dcgan, config, base_dir, time_stamp, cut, count):
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
-    starting_image_path = cut["starting_image"]
+    starting_image_path = cut["start_image"]
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
     if starting_image_path:
@@ -392,7 +392,7 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
     num_cycles = cut["num_cycles"]
     seconds_per_cycle = cut["seconds_per_cycle"]
     mode = cut["mode_num"]
-    starting_image_path = cut["starting_image"]
+    starting_image_path = cut["start_image"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
@@ -541,7 +541,7 @@ def wrap_walk(start_seed, walk_seed, cut):
 def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut, count):
     walk_num = cut["total_frame_num"]
     mode = cut["mode_num"]
-    starting_image_path = cut["starting_image"]
+    starting_image_path = cut["start_image"]
     max_vector_length = cut["max_vector_length"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     # json_path = config.input_seed_path
