@@ -5,7 +5,7 @@ from time import gmtime, strftime
 import json
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_interps_from_json
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100
 
 import tensorflow as tf
 
@@ -162,7 +162,7 @@ def main(_):
           count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
         elif mode == 17:  # Generate continous interp A - B | C - D as defined in json file
           # generate_interps_from_json(sess, dcgan, FLAGS)
-          count = generate_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_countinous_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)
 
 
       # Save config file to gen folder
