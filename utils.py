@@ -498,9 +498,11 @@ def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut
 
         for i in range(config.batch_size):
             if mode == 16:
-                save_name = 'Jump_randSeed{}_{}_max{}_min{}_{:05d}'.format(rand_seed, time_stamp, cut["max_jump_step"], cut["min_jump_step"], walked)
+                # save_name = 'Jump_randSeed{}_{}_max{}_min{}_{:05d}'.format(rand_seed, time_stamp, cut["max_jump_step"], cut["min_jump_step"], walked)
+                save_name = '{}_{}_{}_{:05d}'.format(config.dataset, rand_seed, time_stamp , count)
             else:
                 save_name = '{}_{}_{}_{:05d}'.format(config.dataset, rand_seed, time_stamp , count)
+            count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE walk image generated: " + img_path)
