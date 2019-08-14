@@ -280,11 +280,13 @@ def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut
     # json_path = config.input_seed_path
     seed = [] # Will be reassigned before use
     if starting_image_path:
-        with open(starting_image_path, 'r') as f:
+        full_starting_image_path = "/".join((base_dir, starting_image_path + ".json"))
+        with open(full_starting_image_path, 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+        return
     z_sample_list = []
     # for i in range(config.batch_size):
     step = 0.00001
@@ -302,6 +304,12 @@ def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut
             print("MEEE seed read: " + str(seed))
         else:
             print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+        # if starting_image_path:
+        #     with open(starting_image_path, 'r') as f:
+        #         seed = json.load(f)
+        #     print("MEEE seed read: " + str(seed))
+        # else:
+        #     print(Fore.RED + "MEEE WARNING: Input seed path is None.")
 
     while len(z_sample_list) < config.batch_size:
         z_sample_list.append(seed)
@@ -334,6 +342,12 @@ def generate_sin_cycle_all_100(sess, dcgan, config, base_dir, time_stamp, cut, c
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    # if starting_image_path:
+    #     with open(starting_image_path, 'r') as f:
+    #         seed = json.load(f)
+    #     print("MEEE seed read: " + str(seed))
+    # else:
+    #     print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     orig_seed = seed[:]
     # sin_cycle_json_path = config.sin_cycle_json
     # sin_cycle_json_path = cut["params"]
@@ -386,6 +400,12 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
         print("MEEE seed read: " + str(seed))
     else:
         print(Fore.RED + "MEEE WARNING: Input seed path is None.")
+    # if starting_image_path:
+    #     with open(starting_image_path, 'r') as f:
+    #         seed = json.load(f)
+    #     print("MEEE seed read: " + str(seed))
+    # else:
+    #     print(Fore.RED + "MEEE WARNING: Input seed path is None.")
     z_sample_list = []
     frames_per_cycle = 30 * seconds_per_cycle  # PARAM one cycle in 10 seconds
     num_total_frames = frames_per_cycle * num_cycles
