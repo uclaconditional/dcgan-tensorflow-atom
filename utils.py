@@ -444,7 +444,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut
     # json_file_name = json_file_name.split(".")[0]
     seed = [] # Will be reassigned before use
     if starting_image_path:
-        with open(starting_image_path, 'r') as f:
+        with open("/".join((base_dir, starting_image_path)), 'r') as f:
             seed = json.load(f)
         print("MEEE seed read: " + str(seed))
     else:
