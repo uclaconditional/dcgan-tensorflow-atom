@@ -132,16 +132,16 @@ def main(_):
         # NOTE: for walk in latent space, it is required to pass in --input_seed_path <filename>.json
         elif mode == 6: # Walk in latent space, velocity/acceleration with clamp mode
           # generate_walk_in_latent_space(sess, dcgan, FLAGS, 6)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 7: # Walk in latent space, velocity/acceleration with wrap mode
           # generate_walk_in_latent_space(sess, dcgan, FLAGS, 7)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 8: # Walk in latent space, default mode (not velocity/acceleration)
           # generate_walk_in_latent_space(sess, dcgan, FLAGS, 8)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 9: # Walk in latent space, velocity/acceleration with reverse mode
           # generate_walk_in_latent_space(sess, dcgan, FLAGS, 9)
-          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, time_stamp, cut, count)
+          count = generate_walk_in_latent_space(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 10: # Generate continuous interpretation from a json file
           # generate_continuous_interps_from_json(sess, dcgan, FLAGS)
           count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, time_stamp, cut, count)

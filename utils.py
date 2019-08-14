@@ -437,7 +437,7 @@ def generate_walk_in_latent_space(sess, dcgan, config, time_stamp, cut, count):
     walk_num = cut["total_frame_num"]
     mode = cut["mode_num"]
     starting_image_path = cut["starting_image"]
-    max_vector_length = cut["params"]["max_vector_length"]
+    max_vector_length = cut["max_vector_length"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     # json_path = config.input_seed_path
     # json_file_name = starting_image_path.split("/")[-1]
