@@ -214,7 +214,7 @@ def encode(sess, dcgan, config):
       #   sample_inputs = np.array(sample).astype(np.float32)
 
 
-def generate_random_images(sess, dcgan, config, time_stamp, cut, count):
+def generate_random_images(sess, dcgan, config, base_dir, time_stamp, cut, count):
   num_images = cut["num_frame_num"]
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
@@ -273,7 +273,7 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
-def generate_single_value_changes(sess, dcgan, config, time_stamp, cut, count):
+def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
     change_idx_num = cut["change_idx_num"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     starting_image_path = cut["starting_image"]
@@ -323,7 +323,7 @@ def generate_single_value_changes(sess, dcgan, config, time_stamp, cut, count):
             saved_idx+=1
     return count
 
-def generate_sin_cycle_all_100(sess, dcgan, config, time_stamp, cut, count):
+def generate_sin_cycle_all_100(sess, dcgan, config, base_dir, time_stamp, cut, count):
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
     starting_image_path = cut["starting_image"]
     # json_path = config.input_seed_path
@@ -372,7 +372,7 @@ def generate_sin_cycle_all_100(sess, dcgan, config, time_stamp, cut, count):
                 return count
     return count
 
-def generate_sin_cycle(sess, dcgan, config, time_stamp, cut, count):
+def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
     num_cycles = cut["num_cycles"]
     seconds_per_cycle = cut["seconds_per_cycle"]
     mode = cut["mode_num"]
@@ -584,7 +584,7 @@ def walk_seed(seed, max_step=0.035):
     # print("MEEE walk seed diff: " + str(np_result_seed - np_seed))
     return result_seed
 
-def generate_continuous_random_interps(sess, dcgan, config, time_stamp, cut, count):
+def generate_continuous_random_interps(sess, dcgan, config, base_dir, time_stamp, cut, count):
     total_frame_num = cut["total_frame_num"]
     mode = cut["mode_num"]
     if mode == 2:
