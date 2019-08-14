@@ -674,9 +674,9 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
     base_json_path = base_dir
     seedA = []
     seedB = []
-    with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:
+    with open(base_json_path + '/' + interp_data[0][0] + ".json", 'r') as f:
         seedA = json.load(f)
-    with open(base_json_path + '/' + interp_data["data"][0][1] + ".json", 'r') as f:
+    with open(base_json_path + '/' + interp_data[0][1] + ".json", 'r') as f:
         seedB = json.load(f)
 
     total_frame_num = 0
