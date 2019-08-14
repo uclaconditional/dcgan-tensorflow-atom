@@ -658,7 +658,7 @@ def generate_continuous_random_interps(sess, dcgan, config, time_stamp, cut, cou
                 return count
     return count
 
-def generate_continuous_interps_from_json(sess, dcgan, config, time_stamp, cut, count):
+def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
     # Read interp json
     # with open(config.interp_json, 'r') as f:
@@ -670,7 +670,8 @@ def generate_continuous_interps_from_json(sess, dcgan, config, time_stamp, cut, 
     num_queued_images = 0
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
-    base_json_path = cut["base_dir"] # NOTE: Should pass in from main?
+    # base_json_path = cut["base_dir"] # NOTE: Should pass in from main?
+    base_json_path = base_dir
     seedA = []
     seedB = []
     with open(base_json_path + '/' + interp_data["data"][0][0] + ".json", 'r') as f:

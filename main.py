@@ -110,6 +110,8 @@ def main(_):
       cuts = config_json["data"]
       count = 0
       time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
+      if "base_dir" in config_json:
+        base_dir = config_json["base_dir"]
 
       for cut in cuts:
         mode = cut["mode_num"]
