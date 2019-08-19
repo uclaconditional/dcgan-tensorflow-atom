@@ -98,8 +98,8 @@ def main(_):
           sample_dir=FLAGS.sample_dir,
           data_dir=FLAGS.data_dir,
         # MEEE ATOM options
-          # checkpoint_name=FLAGS.checkpoint_name)
-          checkpoint_name=config_json["checkpoint_name"])
+          checkpoint_name=FLAGS.checkpoint_name)
+          # checkpoint_name=config_json["checkpoint_name"])
 
     show_all_variables()
 
