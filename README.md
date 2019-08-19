@@ -71,7 +71,7 @@ Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames
                 ]
 }
 ```
-### JSON mode descriptions
+### Mode descriptions
 #### Mode 1:
 Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a pair of frames. (For e.g. From frame A to frame B, then from frame C to frame D). Slerp is generally smoother than 'lerp'.
 #### Mode 2:
