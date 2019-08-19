@@ -84,25 +84,25 @@ Common:
 "mode_num" : Mode number of current cut/transition.
 
 if mode_num == 1:  # A - B | B - C, slerp
-"mode_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
+  "mode_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
 if mode_num == 2:  # A - B - C, slerp
-Same as mode 1.
+  Same as mode 1.
 if mode_num == 3:  # Sinusoidal oscillation
-"start_image" : JSON file name of the starting image.
-"total_frame_num" : Number of total frames to generate for this cut.
-"amplitude" : Amplitude of the sinusoidal motion.
-"speed" : Speed of the sinusoidal motion.
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "amplitude" : Amplitude of the sinusoidal motion.
+  "speed" : Speed of the sinusoidal motion.
 if mode_num == 4:  # Random walk, wrap
-"start_image" : JSON file name of the starting image.
-"total_frame_num" : Number of total frames to generate for this cut.
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
 "max_speed" : Maximum of the random speed.
 if mode_num == 5:  # Random walk, clamp
-"start_image" : JSON file name of the starting image.
-"total_frame_num" : Number of total frames to generate for this cut.
-"max_speed" : Maximum of the random speed.
-"clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "max_speed" : Maximum of the random speed.
+  "clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
 if mode_num == 6:  # A - B - C, lerp * change to behave like mode 2
-Same as mode 1.
+  Same as mode 1.
 ```
 
 
