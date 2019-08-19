@@ -66,8 +66,7 @@ Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames
                                 { "mode_num" : 4,
                                   "start_image" : "RandGen_20180918-181322_00119",
                                   "total_frame_num" : 120,
-                                  "wrap_buffer_size" : 0.5,
-                                  "max_walk_speed" : 0.01
+                                  "max_speed" : 0.01
                                 }
                 ]
 }
