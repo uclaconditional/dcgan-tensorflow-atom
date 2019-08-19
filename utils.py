@@ -469,6 +469,8 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     with open("/".join((base_json_path, start_image_json)) + ".json") as f:
         start_seed = json.load(f)
 
+    curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
+
     start_seed = np.asarray(start_seed, dtype=np.float32)
     if mode_num == 3:
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
@@ -481,7 +483,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
         while batch_idx < config.batch_size:
             if mode_num == 3:
-                sin_seed = sinusoidal_walk(offset_seed, num_queued_images, cut)
+                sin_seed, curr_phases = sinusoidal_walk(offset_seed, num_queued_images, cut, curr_phases)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, cut)
@@ -507,14 +509,16 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
                 return count
     return count
 
-def sinusoidal_walk(phase_shift, t, cut):
+def sinusoidal_walk(phase_shift, t, cut, curr_phases):
     amplitude = cut["amplitude"]
     s = cut["speed"]
     result = np.zeros(phase_shift.shape, dtype=np.float32)
+    easing = ["easing"]
     for i in range(result.shape[0]):
+        curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
         result[i] = np.float32(s)*t + phase_shift[i]
     result = np.sin(result) * amplitude
-    return result
+    return result, curr_phases
 
 def clamp_walk(walk_seed, cut):
     max_speed = cut["max_walk_speed"]
