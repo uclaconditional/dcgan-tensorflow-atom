@@ -84,10 +84,6 @@ Randomly walk around the latent space. If any of the 512 numbers reach the bound
 Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, clamp it at the boundary.
 #### Mode 6:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
-#### Mode 7:
-Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D), but wrap around the boundary if wrap distance is shorter than regular interpolation distance.
-#### Mode 8:
-Randomly jump around the space within a certain distance from the starting image. Generates a flicker-like effect.
 
 #### JSON file parameters:
 ```
