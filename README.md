@@ -38,6 +38,78 @@ Number of images to process per iteration. The higher the number the faster the 
 #### Example command:
 In root directory of DCGAN, 
 ```
+python main.py --dataset=Frames-all-scaleTranslate-mag2 --data_dir=/media/conditionalstudio/REAS_MI_2/Persona --input_fname_pattern="Persona-*.jpg" --input_height=128 --input_width=128 --batch_size=16 --crop --output_height=128 --output_width=128 --sample_dir=samples/test-interp --gen_json=test_config.json
+```
+#### The command does:
+Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate-mag2" with dimension 128x128 to 128x128, as defined by "test_config.json".
+
+#### Example JSON file format:
+```
+{
+                "trained_model" : "checkpoint/Contempt_Export_DCGAN_128_16_128_128/DCGAN.model-192501",
+                "base_dir" : "samples/UntitledFilmStills-Contempt-source",
+                "data" : [
+                                { "mode_num" : 1,
+                                 "mode_data" : [["RandGen_20180918-181322_00119", "RandGen_20180918-181322_00233", 48],
+                                                                ["RandGen_20180918-181322_00083", "RandGen_20180918-181322_00337", 48]]
+                                },
+                                { "mode_num" : 2,
+                                 "mode_data" : [["RandGen_20180918-181322_00119", "RandGen_20180918-181322_00233", 48],
+                                                                ["RandGen_20180918-181322_00083", "RandGen_20180918-181322_00337", 48]]
+                                },
+                                { "mode_num" : 3,
+                                  "start_image" : "RandGen_20180918-181322_00119",
+                                  "total_frame_num" : 120,
+                                  "amplitude" : 0.1,
+                                  "speed" : 0.01
+                                },
+                                { "mode_num" : 4,
+                                  "start_image" : "RandGen_20180918-181322_00119",
+                                  "total_frame_num" : 120,
+                                  "wrap_buffer_size" : 0.5,
+                                  "max_walk_speed" : 0.01
+                                }
+                ]
+}
+```
+#### JSON file parameters:
+```
+"trained_model" : Path to the trained model to use, relative to DCGAN root directory.
+"base_dir" : Directory to store the new frames generated.
+"data" : A JSON list that contains info for each transition.
+```
+Elements of "data":
+```
+Common:
+"mode_num" : Mode number of current cut/transition.
+
+if mode_num == 1:  # A - B | B - C, slerp
+  "mode_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
+if mode_num == 2:  # A - B - C, slerp
+  Same as mode 1.
+if mode_num == 3:  # Sinusoidal oscillation
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "amplitude" : Amplitude of the sinusoidal motion.
+  "speed" : Speed of the sinusoidal motion.
+if mode_num == 4:  # Random walk, wrap
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "max_speed" : Maximum of the random speed.
+if mode_num == 5:  # Random walk, clamp
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "max_speed" : Maximum of the random speed.
+  "clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
+if mode_num == 6:  # A - B - C, lerp * change to behave like mode 2
+  Same as mode 1.
+```
+
+
+#### Old style:
+#### Example command:
+In root directory of DCGAN, 
+```
 python main.py --dataset=Frames-all-scaleTranslate-mag2 --data_dir=/media/conditionalstudio/REAS_MI_2/Persona --input_fname_pattern="Persona-*.jpg" --input_height=128 --input_width=128 --batch_size=16 --crop --output_height=128 --output_width=128 --checkpoint_name="DCGAN.model-183502" --generation_mode=1
 ```
 #### The commands does:
