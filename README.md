@@ -95,7 +95,7 @@ if mode_num == 3:  # Sinusoidal oscillation
 if mode_num == 4:  # Random walk, wrap
   "start_image" : JSON file name of the starting image.
   "total_frame_num" : Number of total frames to generate for this cut.
-"max_speed" : Maximum of the random speed.
+  "max_speed" : Maximum of the random speed.
 if mode_num == 5:  # Random walk, clamp
   "start_image" : JSON file name of the starting image.
   "total_frame_num" : Number of total frames to generate for this cut.
