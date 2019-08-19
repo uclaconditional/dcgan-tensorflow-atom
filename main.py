@@ -59,6 +59,10 @@ def main(_):
   run_config = tf.ConfigProto()
   run_config.gpu_options.allow_growth=True
 
+  gen_json_file = FLAGS.gen_json
+  with open(gen_json_file, 'r') as f:
+    config_json = json.load(f)
+  cuts = config_json["data"]
   with tf.Session(config=run_config) as sess:
     if FLAGS.dataset == 'mnist':
       dcgan = DCGAN(
@@ -94,7 +98,8 @@ def main(_):
           sample_dir=FLAGS.sample_dir,
           data_dir=FLAGS.data_dir,
         # MEEE ATOM options
-          checkpoint_name=FLAGS.checkpoint_name)
+          # checkpoint_name=FLAGS.checkpoint_name)
+          checkpoint_name=config_json["checkpoint_name"])
 
     show_all_variables()
 
@@ -105,10 +110,6 @@ def main(_):
         raise Exception("[!] Train a model first, then run test mode")
       # Load Config json file
       mode = FLAGS.generation_mode
-      gen_json_file = FLAGS.gen_json
-      with open(gen_json_file, 'r') as f:
-        config_json = json.load(f)
-      cuts = config_json["data"]
       count = 0
       time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
       if "base_dir" in config_json:

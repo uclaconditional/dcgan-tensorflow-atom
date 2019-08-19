@@ -782,7 +782,7 @@ def generate_continuous_random_interps(sess, dcgan, config, base_dir, time_stamp
 def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
     mode_num = cut["mode_num"]
-    interp_data = cut["mode_data"]
+    interp_data = cut["interp_data"]
 
     steps_per_interp = interp_data[0][2] # 16   # PARAM
     stored_images = 0
