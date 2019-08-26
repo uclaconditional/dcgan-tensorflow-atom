@@ -521,7 +521,7 @@ def sinusoidal_walk(phase_shift, t, cut, curr_phases):
     return result, curr_phases
 
 def clamp_walk(walk_seed, cut):
-    max_speed = cut["max_walk_speed"]
+    max_speed = cut["max_speed"]
     clamp_boundary = cut["clamp_boundary"]
     random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
@@ -537,7 +537,7 @@ def clamp_walk(walk_seed, cut):
 
 def wrap_walk(start_seed, walk_seed, cut):
     # wrap_buffer_size = cut["wrap_buffer_size"]
-    max_speed = cut["max_walk_speed"]
+    max_speed = cut["max_speed"]
     random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
