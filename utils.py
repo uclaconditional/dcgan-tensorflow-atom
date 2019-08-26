@@ -482,6 +482,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
         batch_idx = 0
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
         while batch_idx < config.batch_size:
+            batch_seeds[batch_idx] = curr_seed
             if mode_num == 3:
                 sin_seed, curr_phases = sinusoidal_walk(offset_seed, num_queued_images, cut, curr_phases)
                 curr_seed = start_seed + sin_seed
@@ -489,7 +490,6 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
                 curr_seed = wrap_walk(start_seed, curr_seed, cut)
             elif mode_num == 5:
                 curr_seed = clamp_walk(start_seed, curr_seed, cut)
-            batch_seeds[batch_idx] = curr_seed
             batch_idx += 1
             num_queued_images += 1
         # labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
