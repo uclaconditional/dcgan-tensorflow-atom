@@ -124,6 +124,9 @@ def main(_):
       gen_json_name = FLAGS.gen_json.split("/")[-1]
       copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
 
+      seed_val = config_json["seed"]
+      random.seed(seed_val)
+
 
       for cut in cuts:
         mode = cut["mode_num"]
