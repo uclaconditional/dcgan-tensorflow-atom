@@ -71,6 +71,20 @@ Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames
                 ]
 }
 ```
+### Mode descriptions
+#### Mode 1:
+Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a pair of frames. (For e.g. From frame A to frame B, then from frame C to frame D). Slerp is generally smoother than 'lerp'.
+#### Mode 2:
+Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a sequence of frames. (For e.g. From frame A to frame B to frame C to frame D). Slerp is generally smoother than 'lerp'.
+#### Mode 3:
+Displace each of the 512 numbers with sine waves. While the amplitude and the frequency across all the numbers are the same, their phase differ and is randomly generated. This phase difference is eased in to create a continuous animation from the starting image.
+#### Mode 4:
+Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, wrap around to the other end.
+#### Mode 5:
+Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, clamp it at the boundary.
+#### Mode 6:
+Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
+
 #### JSON file parameters:
 ```
 "trained_model" : Path to the trained model to use, relative to DCGAN root directory.
