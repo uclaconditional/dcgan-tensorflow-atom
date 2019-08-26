@@ -488,7 +488,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, cut)
             elif mode_num == 5:
-                curr_seed = clamp_walk(curr_seed, cut)
+                curr_seed = clamp_walk(start_seed, curr_seed, cut)
             batch_seeds[batch_idx] = curr_seed
             batch_idx += 1
             num_queued_images += 1
@@ -520,18 +520,21 @@ def sinusoidal_walk(phase_shift, t, cut, curr_phases):
     result = np.sin(result) * amplitude
     return result, curr_phases
 
-def clamp_walk(walk_seed, cut):
+def clamp_walk(orig_seed, walk_seed, cut):
     max_speed = cut["max_speed"]
     clamp_boundary = cut["clamp_boundary"]
     random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
     for i in range(result.shape[0]):
+        orig_val = orig_seed[i]
         curr = walked_seeds[i]
-        if curr > clamp_boundary:
-            curr = clamp_boundary
-        if curr < -clamp_boundary:
-            curr = -clamp_boundary
+        upper_bound = min(1.0, orig_val+clamp_boundary)
+        lower_bound = max(-1.0, orig_val-clamp_boundary)
+        if curr > upper_bound:
+            curr = upper_bound
+        if curr < lower_bound:
+            curr = lower_bound
         result[i] = curr
     return result
 
