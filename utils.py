@@ -520,22 +520,26 @@ def sinusoidal_walk(phase_shift, t, cut, curr_phases):
     result = np.sin(result) * amplitude
     return result, curr_phases
 
-def clamp_walk(orig_seed, walk_seed, cut):
+def clamp_walk(start_seed, walk_seed, cut):
     max_speed = cut["max_speed"]
     clamp_boundary = cut["clamp_boundary"]
     random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
     for i in range(result.shape[0]):
-        orig_val = orig_seed[i]
+        orig_val = start_seed[i]
         curr = walked_seeds[i]
         upper_bound = min(1.0, orig_val+clamp_boundary)
         lower_bound = max(-1.0, orig_val-clamp_boundary)
+        if i == 13:
+          print("orig: " + str(orig_val) + " upper: " + str(upper_bound) + " lower: " + str(lower_bound) + " curr_bef: " + str(curr))
         if curr > upper_bound:
             curr = upper_bound
         if curr < lower_bound:
             curr = lower_bound
         result[i] = curr
+        if i == 13:
+          print("curr aft: " + str(curr))
     return result
 
 def wrap_walk(start_seed, walk_seed, cut):
