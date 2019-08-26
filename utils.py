@@ -469,9 +469,9 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     with open("/".join((base_json_path, start_image_json)) + ".json") as f:
         start_seed = json.load(f)
 
+    start_seed = np.asarray(start_seed, dtype=np.float32)
     curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
 
-    start_seed = np.asarray(start_seed, dtype=np.float32)
     if mode_num == 3:
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
