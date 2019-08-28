@@ -965,6 +965,52 @@ def visualize(sess, dcgan, config, option):
         for idx in range(64) + range(63, -1, -1)]
     make_gif(new_image_set, './samples/test_gif_merged.gif', duration=8)
 
+def generate_flicker(mode_num, cut, count):
+    # params = cut["params"]
+
+    stored_images = 0
+    num_queued_images = 0
+    start_image_json = cut["start_image"]
+    total_frame_num = cut["total_frame_num"]
+    base_json_path = config_data["base_dir"]
+
+    with open("/".join((base_json_path, start_image_json)) + ".json") as f:
+        start_seed = json.load(f)
+
+    start_seed = np.asarray(start_seed, dtype=np.float32)
+
+    while stored_images < total_frame_num:
+        batch_idx = 0
+        batch_seeds = np.zeros(shape=(batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
+        while batch_idx < batch_size:
+            if mode_num == 8:
+                curr_seed = step_flicker(start_seed, cut)
+            batch_seeds[batch_idx] = curr_seed
+            batch_idx += 1
+            num_queued_images += 1
+        labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
+
+        samples = Gs.run(batch_seeds, labels)
+        samples = np.swapaxes(samples, 2, 3)
+        samples = np.swapaxes(samples, 1, 3)
+        # Save
+        for i in range(batch_size):
+            save_name = '{}_{}_{:05d}'.format(input_json_path[:-5], time_stamp , count)
+            count += 1
+            img_path = gen_path + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "Image saved: " + img_path)
+            stored_images += 1
+            if stored_images >= total_frame_num:
+                print(Fore.CYAN + "Done !")
+                return count
+    return count
+
+def step_flicker(start_seed, cut):
+    max_step = cut["max_step"]
+    rand_offset = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
+    return start_seed + np.float32(max_step) * rand_offset
+
 def image_manifold_size(num_images):
   manifold_h = int(np.floor(np.sqrt(num_images)))
   manifold_w = int(np.ceil(np.sqrt(num_images)))

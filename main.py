@@ -125,8 +125,8 @@ def main(_):
       gen_json_name = FLAGS.gen_json.split("/")[-1]
       copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
 
-      seed_val = config_json["seed"]
-      random.seed(seed_val)
+      # seed_val = config_json["seed"]
+      # random.seed(seed_val)
 
 
       for cut in cuts:
@@ -143,6 +143,9 @@ def main(_):
           count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 6:  # A - B - C, lerp with wrap if closer
           count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 8:  # Flicker
+          count = generate_flicker(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+
 
         # NOTE: Legacy modes
         # elif mode == 1: # Generate 300 random images and their seed value json files
