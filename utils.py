@@ -473,8 +473,10 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
 
     if mode_num == 3:
+        s = cut["speed"]
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
+        curr_speed = np.random.rand(start_seed.shape, dtype=np.float32) * s
     elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
 
@@ -484,7 +486,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
         while batch_idx < config.batch_size:
             batch_seeds[batch_idx] = curr_seed
             if mode_num == 3:
-                sin_seed, curr_phases = sinusoidal_walk(offset_seed, num_queued_images, cut, curr_phases)
+                sin_seed, curr_phases = sinusoidal_walk(offset_seed, curr_speed, num_queued_images, cut, curr_phases)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, cut)
@@ -509,14 +511,14 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
                 return count
     return count
 
-def sinusoidal_walk(phase_shift, t, cut, curr_phases):
+def sinusoidal_walk(phase_shift, curr_speed, t, cut, curr_phases):
     amplitude = cut["amplitude"]
-    s = cut["speed"]
+    # s = cut["speed"]
     result = np.zeros(phase_shift.shape, dtype=np.float32)
     easing = ["easing"]
     for i in range(result.shape[0]):
         curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
-        result[i] = np.float32(s)*t + phase_shift[i]
+        result[i] = np.float32(curr_speed[i])*t + phase_shift[i]
     result = np.sin(result) * amplitude
     return result, curr_phases
 
