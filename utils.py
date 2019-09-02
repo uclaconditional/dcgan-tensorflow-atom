@@ -4,7 +4,7 @@ Some codes from https://github.com/Newmu/dcgan_code
 from __future__ import division
 import math
 import json
-# import random
+import random
 import pprint
 import scipy.misc
 import numpy as np
@@ -476,7 +476,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
         s = cut["speed"]
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
-        curr_speed = np.random.rand(start_seed.shape, dtype=np.float32) * s
+        curr_speed = np.random.rand(start_seed.shape) * s
     elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
 
