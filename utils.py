@@ -519,7 +519,8 @@ def sinusoidal_walk(phase_shift, curr_speed, t, cut, curr_phases):
     easing = cut["easing"]
     for i in range(result.shape[0]):
         curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
-        result[i] = np.float32(curr_speed[i])*t + phase_shift[i]
+        # result[i] = np.float32(curr_speed[i])*t + phase_shift[i]
+        result[i] = np.float32(curr_speed[i])*t + curr_phases[i]
     result = np.sin(result) * amplitude
     return result, curr_phases
 
