@@ -975,10 +975,10 @@ def generate_flicker(sess, dcgan,config, base_dir, time_stamp, cut, count):
     num_queued_images = 0
     start_image_json = cut["start_image"]
     total_frame_num = cut["total_frame_num"]
-    base_json_path = cut["base_dir"]
+    # base_json_path = cut["base_dir"]
     mode_num = cut["mode_num"]
 
-    with open("/".join((base_json_path, start_image_json)) + ".json") as f:
+    with open("/".join((base_dir, start_image_json)) + ".json") as f:
         start_seed = json.load(f)
 
     start_seed = np.asarray(start_seed, dtype=np.float32)
