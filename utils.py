@@ -457,7 +457,7 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
 
 # Newer version to match PGAN standard
-def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
+def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
     mode_num = cut["mode_num"]
 
     stored_images = 0
@@ -475,8 +475,8 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     if mode_num == 3:
         s = cut["speed"]
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
-        offset_seed = (np.random.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
-        curr_speed = np.random.random_sample(start_seed.shape) * s
+        offset_seed = (rand_state.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
+        curr_speed = rand_state.random_sample(start_seed.shape) * s
         curr_seed = start_seed
     elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
@@ -490,9 +490,9 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
                 sin_seed, curr_phases = sinusoidal_walk(offset_seed, curr_speed, num_queued_images, cut, curr_phases)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
-                curr_seed = wrap_walk(start_seed, curr_seed, cut)
+                curr_seed = wrap_walk(start_seed, curr_seed, rand_state, cut)
             elif mode_num == 5:
-                curr_seed = clamp_walk(start_seed, curr_seed, cut)
+                curr_seed = clamp_walk(start_seed, curr_seed, rand_state, cut)
             batch_idx += 1
             num_queued_images += 1
         # labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
@@ -524,10 +524,10 @@ def sinusoidal_walk(phase_shift, curr_speed, t, cut, curr_phases):
     result = np.sin(result) * amplitude
     return result, curr_phases
 
-def clamp_walk(start_seed, walk_seed, cut):
+def clamp_walk(start_seed, walk_seed, rand_state, cut):
     max_speed = cut["max_speed"]
     clamp_boundary = cut["clamp_boundary"]
-    random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
+    random_walk_val = (rand_state.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
     for i in range(result.shape[0]):
@@ -546,10 +546,10 @@ def clamp_walk(start_seed, walk_seed, cut):
           print("curr aft: " + str(curr))
     return result
 
-def wrap_walk(start_seed, walk_seed, cut):
+def wrap_walk(start_seed, walk_seed, rand_state, cut):
     # wrap_buffer_size = cut["wrap_buffer_size"]
     max_speed = cut["max_speed"]
-    random_walk_val = (np.random.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
+    random_walk_val = (rand_state.random_sample(walk_seed.shape) - np.float32(0.5)) * np.float32(2.0) * np.float32(max_speed)
     walked_seeds = walk_seed + random_walk_val
     result = np.zeros(walk_seed.shape, dtype=np.float32)
     for i in range(result.shape[0]):
@@ -794,7 +794,7 @@ def generate_continuous_random_interps(sess, dcgan, config, base_dir, time_stamp
                 return count
     return count
 
-def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_stamp, cut, count):
+def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
 
     mode_num = cut["mode_num"]
     interp_data = cut["interp_data"]
@@ -817,7 +817,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
 
     curr_cut_idx = 0
 
-    rand_batch_z = np.random.uniform(-1, 1, size=(2 , dcgan.z_dim))
+    rand_batch_z = rand_state.uniform(-1, 1, size=(2 , dcgan.z_dim))
     z1 = np.asarray(seedA, dtype=np.float32)
     z2 = np.asarray(seedB, dtype=np.float32)
     while stored_images < total_frame_num:
@@ -850,7 +850,7 @@ def generate_continuous_interps_from_json(sess, dcgan, config, base_dir, time_st
                 num_queued_images = 0
                 # if is_rand_steps_per_interp:
                     # steps_per_interp = interp_frame_nums[random.randint(0, len(interp_frame_nums)-1)]
-                rand_batch_z = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
+                rand_batch_z = rand_state.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
                 # Read new json to z1
 
                 with open(base_json_path + '/' + interp_data[curr_cut_idx][0] + ".json", 'r') as f:
@@ -969,7 +969,7 @@ def visualize(sess, dcgan, config, option):
         for idx in range(64) + range(63, -1, -1)]
     make_gif(new_image_set, './samples/test_gif_merged.gif', duration=8)
 
-def generate_flicker(sess, dcgan,config, base_dir, time_stamp, cut, count):
+def generate_flicker(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
     # params = cut["params"]
 
     stored_images = 0
@@ -990,7 +990,7 @@ def generate_flicker(sess, dcgan,config, base_dir, time_stamp, cut, count):
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
         while batch_idx < config.batch_size:
             if mode_num == 8:
-                curr_seed = step_flicker(start_seed, cut)
+                curr_seed = step_flicker(start_seed, rand_state, cut)
             batch_seeds[batch_idx] = curr_seed
             batch_idx += 1
             num_queued_images += 1
@@ -1014,9 +1014,9 @@ def generate_flicker(sess, dcgan,config, base_dir, time_stamp, cut, count):
                 return count
     return count
 
-def step_flicker(start_seed, cut):
+def step_flicker(start_seed, rand_state, cut):
     max_step = cut["max_step"]
-    rand_offset = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
+    rand_offset = (rand_state.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
     return start_seed + np.float32(max_step) * rand_offset
 
 def image_manifold_size(num_images):

@@ -126,25 +126,27 @@ def main(_):
       copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
 
       # seed_val = config_json["seed"]
+      rand_seed = config_json["rand_seed"]
+      rand_state = np.random.RandomState(rand_seed)
       # random.seed(seed_val)
 
 
       for cut in cuts:
         mode = cut["mode_num"]
         if mode == 1: # Generate continuous interpretation from a json file
-          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 2: # Generate continuous interpretation from a json file
-          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 3:  # Sinusoidal Oscillation
-          count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_random_walk(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 4:  # Random walk, wrap
-          count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_random_walk(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 5:  # Random walk, clamp
-          count = generate_random_walk(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_random_walk(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 6:  # A - B - C, lerp with wrap if closer
-          count = generate_continuous_interps_from_json(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 8:  # Flicker
-          count = generate_flicker(sess, dcgan, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
         # NOTE: Legacy modes
