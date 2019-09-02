@@ -967,14 +967,15 @@ def visualize(sess, dcgan, config, option):
         for idx in range(64) + range(63, -1, -1)]
     make_gif(new_image_set, './samples/test_gif_merged.gif', duration=8)
 
-def generate_flicker(mode_num, cut, count):
+def generate_flicker(sess, dcgan,config, base_dir, time_stamp, cut, count):
     # params = cut["params"]
 
     stored_images = 0
     num_queued_images = 0
     start_image_json = cut["start_image"]
     total_frame_num = cut["total_frame_num"]
-    base_json_path = config_data["base_dir"]
+    base_json_path = cut["base_dir"]
+    mode_num = cut["mode_num"]
 
     with open("/".join((base_json_path, start_image_json)) + ".json") as f:
         start_seed = json.load(f)
@@ -983,23 +984,26 @@ def generate_flicker(mode_num, cut, count):
 
     while stored_images < total_frame_num:
         batch_idx = 0
-        batch_seeds = np.zeros(shape=(batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
-        while batch_idx < batch_size:
+        # batch_seeds = np.zeros(shape=(config.batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
+        batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
+        while batch_idx < config.batch_size:
             if mode_num == 8:
                 curr_seed = step_flicker(start_seed, cut)
             batch_seeds[batch_idx] = curr_seed
             batch_idx += 1
             num_queued_images += 1
-        labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
+        # labels = np.zeros([batch_seeds[0].shape[0]] + Gs.input_shapes[1][1:])  # Dummy data input
 
-        samples = Gs.run(batch_seeds, labels)
-        samples = np.swapaxes(samples, 2, 3)
-        samples = np.swapaxes(samples, 1, 3)
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+        # samples = Gs.run(batch_seeds, labels)
+        # samples = np.swapaxes(samples, 2, 3)
+        # samples = np.swapaxes(samples, 1, 3)
+
         # Save
-        for i in range(batch_size):
-            save_name = '{}_{}_{:05d}'.format(input_json_path[:-5], time_stamp , count)
+        for i in range(config.batch_size):
+            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
             count += 1
-            img_path = gen_path + "/" + save_name + '.png'
+            img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "Image saved: " + img_path)
             stored_images += 1

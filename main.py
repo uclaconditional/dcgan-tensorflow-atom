@@ -7,7 +7,7 @@ from shutil import copyfile
 import random
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk, generate_flicker
 
 import tensorflow as tf
 
