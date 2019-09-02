@@ -457,7 +457,6 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
 
 # Newer version to match PGAN standard
 def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
-    # params = cut["params"]
     mode_num = cut["mode_num"]
 
     stored_images = 0
@@ -476,7 +475,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
         s = cut["speed"]
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         offset_seed = (np.random.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
-        curr_speed = np.random.rand(start_seed.shape) * s
+        curr_speed = np.random.random_sample(start_seed.shape) * s
     elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
 
