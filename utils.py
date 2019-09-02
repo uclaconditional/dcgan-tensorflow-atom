@@ -10,6 +10,7 @@ import scipy.misc
 import numpy as np
 from time import gmtime, strftime
 from six.moves import xrange
+import pdb
 
 # MEEE
 import json
@@ -474,6 +475,7 @@ def generate_random_walk(sess, dcgan, config, base_dir, time_stamp, cut, count):
     if mode_num == 3:
         s = cut["speed"]
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
+        pdb.set_trace()
         offset_seed = (np.random.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
         curr_speed = np.random.random_sample(start_seed.shape) * s
         curr_seed = start_seed
