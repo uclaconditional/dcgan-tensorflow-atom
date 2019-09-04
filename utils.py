@@ -833,10 +833,14 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
             print(" ratio: " + str(ratio))
 
             if mode_num == 1 or mode_num == 2:
-              lerped_z = slerp(ratio, z1, z2)
-            else:  # Mode 6
-              lerped_z = lerp(ratio, z1, z2)
-            batch_seeds[batch_idx] = lerped_z
+              result_z = slerp(ratio, z1, z2)
+            elif mode_num == 6:  # Mode 6
+              result_z = lerp(ratio, z1, z2)
+            elif mode_num == 10:
+              result_z = exp_ease(ratio, z1, z2, cut)
+            else:
+              result_z = z1   # If here, then no mode num def. Error.
+            batch_seeds[batch_idx] = result_z
             batch_idx += 1
             num_queued_images += 1
             if num_queued_images % steps_per_interp == 0:
@@ -873,6 +877,22 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
             if stored_images >= total_frame_num:
                 return count
     return count
+
+def exp_ease(val, low, high, cut):
+    is_ease_in = cut["is_ease_in"]
+    power = cut["power"]
+    if is_ease_in:
+        result = (high-low) * np.power(ratio, power) + low
+    else:
+        result = -(high-low) * (np.float_power(abs(ratio-1), power) - 1) + low
+    return result
+
+def sinusoid_ease(ratio, low, high, cut):
+    is_ease_in = cut["is_ease_in"]
+    if is_ease_in:
+        return -(high-low) * np.cos(ratio * np.pi / 2.0) + (high-low) + low
+    else:
+        return (high-low) * np.sin(ratio * np.pi / 2.0) + low
 
 def lerp(val, low, high):
     return low + (high - low) * val
