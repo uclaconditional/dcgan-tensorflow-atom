@@ -838,6 +838,8 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = lerp(ratio, z1, z2)
             elif mode_num == 10:
               result_z = exp_ease(ratio, z1, z2, cut)
+            elif mode_num == 11:
+              result_z = flicker_lerp(ratio, z1, z2, cut)
             else:
               result_z = z1   # If here, then no mode num def. Error.
             batch_seeds[batch_idx] = result_z
@@ -896,6 +898,11 @@ def sinusoid_ease(ratio, low, high, cut):
 
 def lerp(val, low, high):
     return low + (high - low) * val
+
+def flicker_lerp(val, low, high, cut):
+    max_step = cut["max_step"]
+    rand_offset = (rand_state.rand(low.shape[0]) - np.float32(0.5)) * np.float32(2.0)
+    return low + (high - low) * val + rand_offset * max_step
 
 def slerp(val, low, high):
     """Code from https://github.com/soumith/dcgan.torch/issues/14"""
@@ -1002,6 +1009,7 @@ def generate_flicker(sess, dcgan, rand_state, config, base_dir, time_stamp, cut,
 
     start_seed = np.asarray(start_seed, dtype=np.float32)
 
+    max_step = cut["max_step"]
     while stored_images < total_frame_num:
         batch_idx = 0
         # batch_seeds = np.zeros(shape=(config.batch_size, Gs.input_shapes[0][1]), dtype=np.float32)
@@ -1032,7 +1040,7 @@ def generate_flicker(sess, dcgan, rand_state, config, base_dir, time_stamp, cut,
                 return count
     return count
 
-def step_flicker(start_seed, rand_state, cut):
+def step_icker(start_seed, rand_state, cut):
     max_step = cut["max_step"]
     rand_offset = (rand_state.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
     return start_seed + np.float32(max_step) * rand_offset

@@ -149,6 +149,8 @@ def main(_):
           count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 10:  # Exponential easing in out mode
           count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 11:  # Exponential easing in out mode
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
         # NOTE: Legacy modes
