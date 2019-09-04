@@ -489,7 +489,7 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
         while batch_idx < config.batch_size:
             batch_seeds[batch_idx] = curr_seed
             if mode_num == 3:
-                sin_seed, curr_phases = sinusoidal_walk(curr_speed, amplitudes, num_queued_images, cut)
+                sin_seed = sinusoidal_walk(curr_speed, amplitudes, num_queued_images, cut)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, rand_state, cut)
