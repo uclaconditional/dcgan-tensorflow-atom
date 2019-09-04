@@ -473,9 +473,11 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
     curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
 
     if mode_num == 3:
-        s = cut["speed"]
+        s = cut["max_speed"]
+        a = cut["max_amplitude"]
+        amplitudes = (rand_state.random_sample(start_seed.shape) - 0.5) * 2.0 * a
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
-        offset_seed = (rand_state.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
+        # offset_seed = (rand_state.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
         curr_speed = rand_state.random_sample(start_seed.shape) * s
         curr_seed = start_seed
     elif mode_num == 4 or mode_num == 5:
@@ -487,7 +489,7 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
         while batch_idx < config.batch_size:
             batch_seeds[batch_idx] = curr_seed
             if mode_num == 3:
-                sin_seed, curr_phases = sinusoidal_walk(offset_seed, curr_speed, num_queued_images, cut, curr_phases)
+                sin_seed, curr_phases = sinusoidal_walk(curr_speed, amplitudes, num_queued_images, cut)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, rand_state, cut)
@@ -512,17 +514,13 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
                 return count
     return count
 
-def sinusoidal_walk(phase_shift, curr_speed, t, cut, curr_phases):
-    amplitude = cut["amplitude"]
-    # s = cut["speed"]
-    result = np.zeros(phase_shift.shape, dtype=np.float32)
-    easing = cut["easing"]
+def sinusoidal_walk(curr_speed, amplitudes, t, cut):
+    result = np.zeros(amplitudes.shape, dtype=np.float32)
     for i in range(result.shape[0]):
-        curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
-        # result[i] = np.float32(curr_speed[i])*t + phase_shift[i]
-        result[i] = np.float32(curr_speed[i])*t + curr_phases[i]
-    result = np.sin(result) * amplitude
-    return result, curr_phases
+        # curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
+        result[i] = np.float32(curr_speed[i])*t
+    result = np.sin(result) * amplitudes[i]
+    return result
 
 def clamp_walk(start_seed, walk_seed, rand_state, cut):
     max_speed = cut["max_speed"]
