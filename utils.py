@@ -845,6 +845,9 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
             elif mode_num == 13:
               result_z = exp_ease_inout(ratio, z1, z2, cut)
               result_z = step_flicker(result_z, rand_state, cut)
+            elif mode_num == 14:
+              result_z = slerp(ratio, z1, z2)
+              result_z = step_flicker(result_z, rand_state, cut)
             else:
               result_z = z1   # If here, then no mode num def. Error.
             batch_seeds[batch_idx] = result_z

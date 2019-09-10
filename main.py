@@ -157,6 +157,8 @@ def main(_):
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 13:  # Flicker + Exponential ease inout A - B | B - C
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 14:  # Slerp + Flicker
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
         # NOTE: Legacy modes
