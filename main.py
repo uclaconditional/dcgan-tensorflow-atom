@@ -147,15 +147,15 @@ def main(_):
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 8:  # Flicker
           count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 10:  # Exponential easing in out mode
+        elif mode == 9:  # Exponential easing in or out mode
           # count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
-          # NOTE: Mode 11 Sinusoidal easing Interp
-        elif mode == 12:  # Flicker lerp
+          # NOTE: Mode 10 Sinusoidal easing Interp
+        elif mode == 11:  # Flicker lerp
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 13:  # Exponential ease inout A - B | B - C
+        elif mode == 12:  # Exponential ease inout A - B | B - C
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 15:  # Flicker + Exponential ease inout A - B | B - C
+        elif mode == 13:  # Flicker + Exponential ease inout A - B | B - C
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 

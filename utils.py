@@ -836,13 +836,13 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = slerp(ratio, z1, z2)
             elif mode_num == 6:  # Mode 6
               result_z = lerp(ratio, z1, z2)
-            elif mode_num == 10:
+            elif mode_num == 9:
               result_z = exp_ease(ratio, z1, z2, cut)
-            elif mode_num == 12:
+            elif mode_num == 11:
               result_z = flicker_lerp(ratio, z1, z2, rand_state, cut)
-            elif mode_num == 14:
+            elif mode_num == 12:
               result_z = exp_ease_inout(ratio, z1, z2, cut)
-            elif mode_num == 15:
+            elif mode_num == 13:
               result_z = exp_ease_inout(ratio, z1, z2, cut)
               result_z = step_flicker(result_z, rand_state, cut)
             else:
