@@ -838,7 +838,7 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = lerp(ratio, z1, z2)
             elif mode_num == 10:
               result_z = exp_ease(ratio, z1, z2, cut)
-            elif mode_num == 11:
+            elif mode_num == 12:
               result_z = flicker_lerp(ratio, z1, z2, cut)
             else:
               result_z = z1   # If here, then no mode num def. Error.
