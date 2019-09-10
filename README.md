@@ -94,6 +94,8 @@ Randomly jump around the space within a certain distance from the lerp position 
 Exponentially ease in and then out when interpolating between two key frames (A | slow - fast - slow | B). Easing speed is controllable through param "power".
 #### Mode 13:
 Exponential ease in and then out with flicker.
+#### Mode 14:
+Slerp with flicker.
 
 #### JSON file parameters:
 ```
@@ -144,6 +146,9 @@ if mode_num == 12:  # Exponential ease inout
 if mode_num == 13:  # Flicker +  Exponential ease inout A - B | B - C
   "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "power" : Exponent of animation. Higher is faster.
+  "max_step" : Maximun step per number from the original frame.
+if mode_num == 14:  # Slerp + flicker
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "max_step" : Maximun step per number from the original frame.
 ```
 
