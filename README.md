@@ -136,15 +136,15 @@ if mode_num == 9:  # Exponential easing in or out
   "is_ease_in" : "true" for easing in, "false" for easing out.
   "power" : Exponent of animation. Higher is faster.
 if mode_num == 11:  # Flicker lerp
- "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
- "max_step" : Maximun step per number from the original frame.
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "max_step" : Maximun step per number from the original frame.
 if mode_num == 12:  # Exponential ease inout
- "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
- "power" : Exponent of animation. Higher is faster.
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "power" : Exponent of animation. Higher is faster.
 if mode_num == 13:  # Flicker +  Exponential ease inout A - B | B - C
- "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
- "power" : Exponent of animation. Higher is faster.
- "max_step" : Maximun step per number from the original frame.
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "power" : Exponent of animation. Higher is faster.
+  "max_step" : Maximun step per number from the original frame.
 ```
 
 
