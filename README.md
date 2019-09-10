@@ -84,11 +84,22 @@ Randomly walk around the latent space. If any of the 512 numbers reach the bound
 Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, clamp it at the boundary.
 #### Mode 6:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
+#### Mode 8:
+Randomly jump around the space within a certain distance from the starting image. Generates a flicker-like effect.
+#### Mode 9:
+Exponential ease in or ease out when interpolating between two key frames. Easing speed and whether to ease in or out is controlled through json params.
+#### Mode 11:
+Randomly jump around the space within a certain distance from the lerp position from A - B.
+#### Mode 12:
+Exponentially ease in and then out when interpolating between two key frames (A | slow - fast - slow | B). Easing speed is controllable through param "power".
+#### Mode 13:
+Exponential ease in and then out with flicker.
 
 #### JSON file parameters:
 ```
 "trained_model" : Path to the trained model to use, relative to DCGAN root directory.
 "base_dir" : Directory to store the new frames generated.
+"rand_seed" : Random seed to be used to generate this video. "rand_seed" is used per video, not per cut.
 "data" : A JSON list that contains info for each transition.
 ```
 Elements of "data":
@@ -116,10 +127,28 @@ if mode_num == 5:  # Random walk, clamp
   "clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
 if mode_num == 6:  # A - B - C, lerp * change to behave like mode 2
   Same as mode 1.
+if mode_num == 8:  # Flicker
+  "start_image" : JSON file name of the starting image.
+  "total_frame_num" : Number of total frames to generate for this cut.
+  "max_step" : Maximun step per number from the original frame.
+if mode_num == 9:  # Exponential easing in or out
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "is_ease_in" : "true" for easing in, "false" for easing out.
+  "power" : Exponent of animation. Higher is faster.
+if mode_num == 11:  # Flicker lerp
+ "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+ "max_step" : Maximun step per number from the original frame.
+if mode_num == 12:  # Exponential ease inout
+ "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+ "power" : Exponent of animation. Higher is faster.
+if mode_num == 13:  # Flicker +  Exponential ease inout A - B | B - C
+ "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+ "power" : Exponent of animation. Higher is faster.
+ "max_step" : Maximun step per number from the original frame.
 ```
 
 
-#### Old style:
+#### Legacy command style:
 #### Example command:
 In root directory of DCGAN, 
 ```
