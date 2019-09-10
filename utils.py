@@ -840,6 +840,8 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = exp_ease(ratio, z1, z2, cut)
             elif mode_num == 12:
               result_z = flicker_lerp(ratio, z1, z2, rand_state, cut)
+            elif mode_num == 14:
+              result_z = exp_ease_inout(ratio, z1, z2, cut)
             else:
               result_z = z1   # If here, then no mode num def. Error.
             batch_seeds[batch_idx] = result_z
@@ -887,6 +889,15 @@ def exp_ease(val, low, high, cut):
         result = (high-low) * np.power(ratio, power) + low
     else:
         result = -(high-low) * (np.float_power(abs(ratio-1), power) - 1) + low
+    return result
+
+def exp_ease_inout(ratio, low, high, cut):
+    power = cut["power"]
+    t = ratio * 2.0
+    if t < 1.0:
+        result = ((high-low)/2.0) * np.power(t, power) + low
+    else:
+        result = -((high-low)/2.0) * (np.float_power(abs(t-2), power) - 2) + low
     return result
 
 def sinusoid_ease(ratio, low, high, cut):

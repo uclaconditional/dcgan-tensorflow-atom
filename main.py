@@ -148,8 +148,11 @@ def main(_):
         elif mode == 8:  # Flicker
           count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 10:  # Exponential easing in out mode
-          count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+          # count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 12:  # Flicker lerp
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 14:  # Exponential ease inout A - B | B - C
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
