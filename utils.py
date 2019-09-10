@@ -1051,7 +1051,7 @@ def generate_flicker(sess, dcgan, rand_state, config, base_dir, time_stamp, cut,
                 return count
     return count
 
-def step_icker(start_seed, rand_state, cut):
+def step_flicker(start_seed, rand_state, cut):
     max_step = cut["max_step"]
     rand_offset = (rand_state.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
     return start_seed + np.float32(max_step) * rand_offset
