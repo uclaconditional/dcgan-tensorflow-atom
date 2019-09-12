@@ -301,7 +301,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
 
         while batch_idx < config.batch_size:
             # Do things
-            step_idx = num_queued_image % frames_per_period
+            step_idx = num_queued_images % frames_per_period
             result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size)
 
             batch_seeds[batch_idx] = result_z
