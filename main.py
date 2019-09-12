@@ -118,7 +118,6 @@ def main(_):
       if "base_dir" in config_json:
         base_dir = config_json["base_dir"]
 
-      pdb.set_trace()
       # Make dir with timestamp and update FLAGS.sample_dir
       json_file = FLAGS.gen_json.split("/")[-1]
       json_file_name = json_file.split(".")[0]
@@ -129,7 +128,6 @@ def main(_):
       # Copy over config file for record keeping
       gen_json_name = FLAGS.gen_json.split("/")[-1]
       copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
-      pdb.set_trace()
 
       # seed_val = config_json["seed"]
       rand_seed = config_json["rand_seed"]
