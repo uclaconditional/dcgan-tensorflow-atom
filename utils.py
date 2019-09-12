@@ -316,7 +316,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
 
         # Naming
         for i in range(config.batch_size):
-            json_file_name = config.json_path.split(".")[0]
+            json_file_name = config.gen_json.split(".")[0]
             save_name = '{}_{}_{:05d}'.format(json_file_name, time_stamp , count)
             count += 1
             # TODO: Create timestampt dir
