@@ -248,7 +248,7 @@ def generate_random_images(sess, dcgan, rand_state, config, base_dir, time_stamp
         with open(json_path, 'w') as outfile:
             json.dump(rand_seed, outfile)
         idx += 1
-    return count
+  return count
 
 def generate_image_from_seed(sess, dcgan, config):
     json_path = config.input_seed_path
