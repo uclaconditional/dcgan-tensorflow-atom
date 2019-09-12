@@ -274,7 +274,7 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
-def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count):
+def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
     frames_per_period = cut["frames_per_period"]
     is_wrap = cut["is_wrap"]
     start_image_file = cut["start_image"]
