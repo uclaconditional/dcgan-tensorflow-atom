@@ -276,9 +276,7 @@ def generate_image_from_seed(sess, dcgan, config):
 
 def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
     frames_per_period = cut["frames_per_period"]
-    is_wrap = cut["is_wrap"]
     start_image_file = cut["start_image"]
-    step_size = 4.0 / frames_per_period
 
     stored_images = 0
     num_queued_images = 0
@@ -305,7 +303,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
             pdb.set_trace()
             step_idx = num_queued_images % frames_per_period
             print("stapidx: " + str(step_idx))
-            result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size)
+            result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut)
 
             batch_seeds[batch_idx] = np.asarray(result_z)
             batch_idx += 1
@@ -332,16 +330,23 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
                 return count
     return count
 
-def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size):
+def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
+    frames_per_period = cut["frames_per_period"]
+    is_wrap = cut["is_wrap"]
+    step_size = 4.0 / frames_per_period
+
     traverse_num = start_image[curr_seed_idx]
-    traverse_num += step_size * step_idx
-    if traverse_num > 1.0:
-        traverse_num = 1.0 - (traverse_num - 1.0)
-    if traverse_num < -1.0:
-        traverse_num = -1.0 - (traverse_num + 1.0)
+    if not is_wrap:
+        traverse_num += step_size * step_idx
+        if traverse_num > 1.0:
+            traverse_num = 1.0 - (traverse_num - 1.0)
+        if traverse_num < -1.0:
+            traverse_num = -1.0 - (traverse_num + 1.0)
+    else:
+        while traverse_num > 1.0:
+            traverse_num = -1.0 + (traverse_num - 1.0)
     result = start_image.copy()
     result[curr_seed_idx] = traverse_num
-    print("traversenum: " + str(traverse_num))
     return result
 
 def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
