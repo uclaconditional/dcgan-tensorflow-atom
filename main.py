@@ -118,7 +118,7 @@ def main(_):
 
       # Make dir with timestamp and update FLAGS.sample_dir
       json_file_name = FLAGS.gen_json.split(".")[0]
-      full_gen_path = "/".join((FLAGS.sample_dir, json_file_name + FLAGS.dataset + "-" + time_stamp))
+      full_gen_path = "/".join((FLAGS.sample_dir, json_file_name + "-" + FLAGS.dataset + "-" + time_stamp))
       if not os.path.exists(full_gen_path):
           os.makedirs(full_gen_path)
       FLAGS.sample_dir = full_gen_path
