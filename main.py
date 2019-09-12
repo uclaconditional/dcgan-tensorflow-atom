@@ -135,7 +135,7 @@ def main(_):
       # random.seed(seed_val)
 
       # Generate images from seeds all 1, 0, -1
-      generate_all101(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, None, count)
+      # generate_all101(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, None, count)
 
       for cut in cuts:
         mode = cut["mode_num"]

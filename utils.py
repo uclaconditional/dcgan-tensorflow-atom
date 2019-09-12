@@ -335,8 +335,8 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
     step_size = 4.0 / frames_per_period
 
     traverse_num = start_image[curr_seed_idx]
+    traverse_num += step_size * step_idx
     if not is_wrap:
-        traverse_num += step_size * step_idx
         if traverse_num > 1.0:
             traverse_num = 1.0 - (traverse_num - 1.0)
         if traverse_num < -1.0:
