@@ -331,6 +331,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
 
 def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size):
     traverse_num = start_image[curr_seed_idx]
+    pdb.set_trace()
     traverse_num += step_size * step_idx
     if traverse_num > 1.0:
         traverse_num = 1.0 - (traverse_num - 1.0)
