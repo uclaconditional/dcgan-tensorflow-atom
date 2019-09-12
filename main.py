@@ -159,6 +159,8 @@ def main(_):
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 14:  # Slerp + Flicker
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == "randGen": # Generate 300 random images and their seed value json files
+          count = generate_random_images(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
         # NOTE: Legacy modes

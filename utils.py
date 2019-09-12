@@ -215,15 +215,15 @@ def encode(sess, dcgan, config):
       #   sample_inputs = np.array(sample).astype(np.float32)
 
 
-def generate_random_images(sess, dcgan, config, base_dir, time_stamp, cut, count):
-  num_images = cut["num_frame_num"]
+def generate_random_images(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
+  num_images = cut["total_frame_num"]
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
   idx = 0
   # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
 
   while 1:
     values = np.arange(0, 1, 1./config.batch_size)
-    z_sample = np.random.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
+    z_sample = rand_state.uniform(-1, 1, size=(config.batch_size , dcgan.z_dim))
     print("MEEE first z_sample: " + str(z_sample[0, :5]))
     print("MEEE z_sample shape: " + str(z_sample.shape))
     # for kdx, z in enumerate(z_sample): # Why many times sess.run(z_sample) ?
