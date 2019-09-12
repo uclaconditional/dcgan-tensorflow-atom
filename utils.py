@@ -309,7 +309,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
             num_queued_images += 1
 
             # If condition met, increase idx
-            if num_queued_images % frames_per_period:
+            if num_queued_images % frames_per_period == 0:
               curr_seed_idx += 1
 
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
