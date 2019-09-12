@@ -357,9 +357,9 @@ def generate_all101(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, 
     batch_seeds[1] = allZero
     batch_seeds[2] = allNeg
     samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
-    one_save_name = "{}-allOne.png".format(config.dataset_name)
-    zero_save_name = "{}-allZero.png".format(config.dataset_name)
-    neg_save_name = "{}-allneg.png".format(config.dataset_name)
+    one_save_name = "{}-allOne.png".format(config.dataset)
+    zero_save_name = "{}-allZero.png".format(config.dataset)
+    neg_save_name = "{}-allneg.png".format(config.dataset)
 
     one_img_path = config.sample_dir + "/" + one_save_name + '.png'
     scipy.misc.imsave(one_img_path, samples[0, :, :, :])
