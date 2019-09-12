@@ -77,11 +77,11 @@ Use spherical linear interpolation, slerp (implementation by Tom White https://g
 #### Mode 2:
 Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a sequence of frames. (For e.g. From frame A to frame B to frame C to frame D). Slerp is generally smoother than 'lerp'.
 #### Mode 3:
-Displace each of the 512 numbers with sine waves. While the amplitude and the frequency across all the numbers are the same, their phase differ and is randomly generated. This phase difference is eased in to create a continuous animation from the starting image.
+Displace each of the 100 numbers with sine waves. While the amplitude and the frequency across all the numbers are the same, their phase differ and is randomly generated. This phase difference is eased in to create a continuous animation from the starting image.
 #### Mode 4:
-Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, wrap around to the other end.
+Randomly walk around the latent space. If any of the 100 numbers reach the boundary of the space, wrap around to the other end.
 #### Mode 5:
-Randomly walk around the latent space. If any of the 512 numbers reach the boundary of the space, clamp it at the boundary.
+Randomly walk around the latent space. If any of the 100 numbers reach the boundary of the space, clamp it at the boundary.
 #### Mode 6:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
 #### Mode 8:
@@ -94,6 +94,8 @@ Randomly jump around the space within a certain distance from the lerp position 
 Exponentially ease in and then out when interpolating between two key frames (A | slow - fast - slow | B). Easing speed is controllable through param "power".
 #### Mode 13:
 Exponential ease in and then out with flicker.
+#### Mode 14:
+Slerp with flicker.
 
 #### JSON file parameters:
 ```
@@ -144,6 +146,9 @@ if mode_num == 12:  # Exponential ease inout
 if mode_num == 13:  # Flicker +  Exponential ease inout A - B | B - C
   "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "power" : Exponent of animation. Higher is faster.
+  "max_step" : Maximun step per number from the original frame.
+if mode_num == 14:  # Slerp + flicker
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "max_step" : Maximun step per number from the original frame.
 ```
 
