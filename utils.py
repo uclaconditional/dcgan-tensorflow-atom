@@ -319,7 +319,6 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
             json_file = config.gen_json.split("/")[-1]
             json_file_name = json_file.split(".")[0]
             save_name = '{}_{}_{:05d}'.format(json_file_name, time_stamp , count)
-            pdb.set_trace()
             count += 1
             # TODO: Create timestampt dir
             img_path = config.sample_dir + "/" + save_name + '.png'
