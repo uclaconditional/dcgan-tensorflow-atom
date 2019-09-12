@@ -291,6 +291,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
         start_image = np.asarray(start_image)
 
     total_frame_num = frames_per_period * start_image.shape[0]
+    # total_frame_num = frames_per_period * len(start_image)
 
     curr_seed_idx = 0
 
@@ -306,7 +307,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
             print("stapidx: " + str(step_idx))
             result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size)
 
-            batch_seeds[batch_idx] = result_z
+            batch_seeds[batch_idx] = np.asarray(result_z)
             batch_idx += 1
             num_queued_images += 1
 
@@ -338,9 +339,10 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size
         traverse_num = 1.0 - (traverse_num - 1.0)
     if traverse_num < -1.0:
         traverse_num = -1.0 - (traverse_num + 1.0)
-    start_image[curr_seed_idx] = traverse_num
+    result = start_image.copy()
+    result[curr_seed_idx] = traverse_num
     print("traversenum: " + str(traverse_num))
-    return start_image
+    return result
 
 def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
     change_idx_num = cut["change_idx_num"]
