@@ -7,7 +7,7 @@ from shutil import copyfile
 import random
 
 from model import DCGAN
-from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk, generate_flicker
+from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk, generate_flicker, generate_traverse_all_latent_vectors
 
 import tensorflow as tf
 
@@ -162,6 +162,8 @@ def main(_):
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == "randGen": # Generate 300 random images and their seed value json files
           count = generate_random_images(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 15:  # Traverse all latent vectors
+          count = generate_traverse_all_latent_vectors(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
 
 
         # NOTE: Legacy modes

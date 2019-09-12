@@ -274,6 +274,70 @@ def generate_image_from_seed(sess, dcgan, config):
     scipy.misc.imsave(img_path, samples[0, :, :, :])
     print(Fore.CYAN + "MEEE seed image generated: " + img_path)
 
+def generate_travers_all_latent_vectors(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count):
+    frames_per_period = cut["frames_per_period"]
+    is_wrap = cut["is_wrap"]
+    start_image_file = cut["start_image"]
+    step_size = 2.0 / frames_per_period
+
+    stored_images = 0
+    num_queued_images = 0
+
+    base_json_path = base_dir
+
+    start_image = []
+    with open(base_json_path + '/' + start_image_file + ".json", 'r') as f:
+        start_image = json.load(f)
+        start_image = np.asarray(start_image)
+
+    total_frame_num = frames_per_period * start_image.shape[0]
+
+    curr_seed_idx = 0
+
+
+    while stored_images < total_frame_num:
+        batch_idx = 0
+        batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
+
+        while batch_idx < config.batch_size:
+            # Do things
+            step_idx = num_queued_image % frames_per_period
+            result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size)
+
+            batch_seeds[batch_idx] = result_z
+            batch_idx += 1
+            num_queued_images += 1
+
+            # If condition met, increase idx
+            if num_queued_images % frames_per_period:
+              curr_seed_idx += 1
+
+        samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+
+        # Naming
+        for i in range(config.batch_size):
+            json_file_name = config.json_path.split(".")[0]
+            save_name = '{}_{}_{:05d}'.format(json_file_name, time_stamp , count)
+            count += 1
+            # TODO: Create timestampt dir
+            img_path = config.sample_dir + "/" + save_name + '.png'
+            scipy.misc.imsave(img_path, samples[i, :, :, :])
+            print(Fore.CYAN + "Continuous random interp image generated: " + img_path)
+            stored_images += 1
+            if stored_images >= total_frame_num:
+                return count
+    return count
+
+def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, step_size):
+    traverse_num = start_image[curr_seed_idx]
+    traverse_num += step_size * step_idx
+    if traverse_num > 1.0:
+        traverse_num = 1.0 - (traverse_num - 1.0)
+    if traverse_num < -1.0:
+        traverse_num = -1.0 - (traverse_num + 1.0)
+    start_image[curr_seed_idx] = traverse_num
+    return start_image
+
 def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
     change_idx_num = cut["change_idx_num"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
