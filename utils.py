@@ -332,10 +332,17 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
 def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
     frames_per_period = cut["frames_per_period"]
     is_wrap = cut["is_wrap"]
-    step_size = 4.0 / frames_per_period
+    is_exp_ease = cut["is_exp_ease"]
 
     traverse_num = start_image[curr_seed_idx]
-    traverse_num += step_size * step_idx
+
+    if is_exp_ease:
+        ratio = step_idx / frames_per_period
+        traverse_num += 4.0 * exp_ease_inout(ratio, 0.0, 1.0, cut)
+    else:
+        step_size = 4.0 / frames_per_period
+        traverse_num += step_size * step_idx
+
     if not is_wrap:
         if traverse_num > 1.0:
             traverse_num = 1.0 - (traverse_num - 1.0)
@@ -346,6 +353,15 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
             traverse_num = -1.0 + (traverse_num - 1.0)
     result = start_image.copy()
     result[curr_seed_idx] = traverse_num
+    return result
+
+def exp_ease_inout(ratio, low, high, cut):
+    power = cut["power"]
+    t = ratio * 2.0
+    if t < 1.0:
+        result = ((high-low)/2.0) * np.power(t, power) + low
+    else:
+        result = -((high-low)/2.0) * (np.float_power(abs(t-2), power) - 2) + low
     return result
 
 def generate_all101(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
