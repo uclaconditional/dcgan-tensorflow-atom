@@ -6,6 +6,8 @@ import json
 from shutil import copyfile
 import random
 
+import pdb
+
 from model import DCGAN
 from utils import pp, visualize, to_json, show_all_variables, generate_random_images, encode, generate_image_from_seed, generate_walk_in_latent_space, generate_continuous_random_interps, generate_continuous_interps_from_json, generate_single_value_changes, generate_sin_cycle, generate_sin_cycle_all_100, generate_random_walk, generate_flicker, generate_traverse_all_latent_vectors
 
@@ -125,6 +127,7 @@ def main(_):
       # Copy over config file for record keeping
       gen_json_name = FLAGS.gen_json.split("/")[-1]
       copyfile(FLAGS.gen_json, "/".join((full_gen_path, gen_json_name)))
+      pdb.set_trace()
 
       # seed_val = config_json["seed"]
       rand_seed = config_json["rand_seed"]
