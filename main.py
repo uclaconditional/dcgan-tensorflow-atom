@@ -120,7 +120,8 @@ def main(_):
 
       pdb.set_trace()
       # Make dir with timestamp and update FLAGS.sample_dir
-      json_file_name = FLAGS.gen_json.split(".")[0]
+      json_file = FLAGS.gen_json.split("/")[-1]
+      json_file_name = json_file.split(".")[0]
       full_gen_path = "/".join((FLAGS.sample_dir, json_file_name + "-" + FLAGS.dataset + "-" + time_stamp))
       if not os.path.exists(full_gen_path):
           os.makedirs(full_gen_path)

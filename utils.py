@@ -316,6 +316,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
 
         # Naming
         for i in range(config.batch_size):
+            json_file = config.gen_json.split("/")[-1]
             json_file_name = config.gen_json.split(".")[0]
             save_name = '{}_{}_{:05d}'.format(json_file_name, time_stamp , count)
             pdb.set_trace()
