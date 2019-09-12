@@ -348,6 +348,29 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
     result[curr_seed_idx] = traverse_num
     return result
 
+def generate_all101(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
+    allOne = np.ones((100))
+    allZero = np.zeros((100))
+    allNeg = allOne.copy() * -1.0
+    batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
+    batch_seeds[0] = allOne
+    batch_seeds[1] = allZero
+    batch_seeds[2] = allNeg
+    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: batch_seeds})
+    one_save_name = "{}-allOne.png".format(config.dataset_name)
+    zero_save_name = "{}-allZero.png".format(config.dataset_name)
+    neg_save_name = "{}-allneg.png".format(config.dataset_name)
+
+    one_img_path = config.sample_dir + "/" + one_save_name + '.png'
+    scipy.misc.imsave(one_img_path, samples[0, :, :, :])
+
+    zero_img_path = config.sample_dir + "/" + zero_save_name + '.png'
+    scipy.misc.imsave(zero_img_path, samples[1, :, :, :])
+
+    neg_img_path = config.sample_dir + "/" + neg_save_name + '.png'
+    scipy.misc.imsave(neg_img_path, samples[2, :, :, :])
+    return 3
+
 def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut, count):
     change_idx_num = cut["change_idx_num"]
     # time_stamp = strftime("%Y%m%d-%H%M%S", gmtime())
