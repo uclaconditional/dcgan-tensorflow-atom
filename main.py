@@ -118,6 +118,7 @@ def main(_):
       if "base_dir" in config_json:
         base_dir = config_json["base_dir"]
 
+      pdb.set_trace()
       # Make dir with timestamp and update FLAGS.sample_dir
       json_file_name = FLAGS.gen_json.split(".")[0]
       full_gen_path = "/".join((FLAGS.sample_dir, json_file_name + "-" + FLAGS.dataset + "-" + time_stamp))
