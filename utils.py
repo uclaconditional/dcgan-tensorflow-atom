@@ -302,6 +302,7 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
             # Do things
             step_idx = num_queued_images % frames_per_period
             print("stapidx: " + str(step_idx))
+            print("currSeedIdx: " + str(curr_seed_idx))
             result_z = traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut)
 
             batch_seeds[batch_idx] = np.asarray(result_z)
