@@ -335,12 +335,16 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
     is_exp_ease = cut["is_exp_ease"]
 
     traverse_num = start_image[curr_seed_idx]
+    if is_wrap:
+      traverse_length = 2.0
+    else:
+      traverse_length = 4.0
 
     if is_exp_ease:
         ratio = step_idx / frames_per_period
-        traverse_num += 4.0 * exp_ease_inout(ratio, 0.0, 1.0, cut)
+        traverse_num += traverse_length * exp_ease_inout(ratio, 0.0, 1.0, cut)
     else:
-        step_size = 4.0 / frames_per_period
+        step_size = traverse_length / frames_per_period
         traverse_num += step_size * step_idx
 
     if not is_wrap:
@@ -349,7 +353,7 @@ def traverse_latent_vectors_step(start_image, step_idx, curr_seed_idx, cut):
         if traverse_num < -1.0:
             traverse_num = -1.0 - (traverse_num + 1.0)
     else:
-        while traverse_num > 1.0:
+        if traverse_num > 1.0:
             traverse_num = -1.0 + (traverse_num - 1.0)
     result = start_image.copy()
     result[curr_seed_idx] = traverse_num
