@@ -299,6 +299,8 @@ def generate_traverse_all_latent_vectors(sess, dcgan, rand_state, config, base_d
         batch_seeds = np.zeros(shape=(config.batch_size, 100), dtype=np.float32)
 
         while batch_idx < config.batch_size:
+            if curr_seed_idx >= 100:
+                break
             # Do things
             step_idx = num_queued_images % frames_per_period
             print("stapidx: " + str(step_idx))
