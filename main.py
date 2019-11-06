@@ -64,7 +64,7 @@ def main(_):
 
   gen_json_file = FLAGS.gen_json
   if gen_json_file is not None:
-  	with open(gen_json_file, 'r') as f:
+    with open(gen_json_file, 'r') as f:
       config_json = json.load(f)
     cuts = config_json["data"]
   with tf.Session(config=run_config) as sess:
