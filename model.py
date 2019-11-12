@@ -18,7 +18,7 @@ class DCGAN(object):
          batch_size=64, sample_num = 64, output_height=64, output_width=64,
          y_dim=None, z_dim=100, gf_dim=64, df_dim=64,
          gfc_dim=1024, dfc_dim=1024, c_dim=3, dataset_name='default',
-               input_fname_pattern='*.jpg', checkpoint_dir=None, sample_dir=None, data_dir='./data', checkpoint_name=None):
+               input_fname_pattern='*.jpg', checkpoint_dir=None, sample_dir=None, data_dir='./data', checkpoint_name=None, start_epoch=0):
     """
 
     Args:
@@ -198,7 +198,8 @@ class DCGAN(object):
     else:
       print(" [!] Load failed...")
 
-    for epoch in xrange(config.epoch):
+    # for epoch in xrange(config.epoch):
+    for epoch in range(start_epoch, config.epoch):
       if config.dataset == 'mnist':
         batch_idxs = min(len(self.data_X), config.train_size) // config.batch_size
       else:      

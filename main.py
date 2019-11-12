@@ -32,7 +32,9 @@ flags.DEFINE_boolean("train", False, "True for training, False for testing [Fals
 flags.DEFINE_boolean("crop", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
 flags.DEFINE_integer("generate_test_images", 100, "Number of images to generate during test. [100]")
-# MEEE custom flags
+# Train mode custom flags
+flags.DEFINE_integer("start_epoch", 0, "Number of epochs to try and train from. [0]")
+# Gen mode
 flags.DEFINE_string("input_seed_path", None, "Path to the json file to be inputted to generator.")
 flags.DEFINE_integer("walk_rand_seed", None, "Seed for PRNG to be inputted (to recreate previous film)")
 flags.DEFINE_integer("walk_num", 2700, "Number of frames of walk in latent space.")
