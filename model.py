@@ -78,7 +78,7 @@ class DCGAN(object):
       self.data_X, self.data_y = self.load_mnist()
       self.c_dim = self.data_X[0].shape[-1]
     else:
-      data_path = os.path.join(self.data_dir, self.dataset_name, self.input_fname_pattern)
+      data_path = os.path.join(self.data_dir, self.dataset_name, "*", self.input_fname_pattern)
       self.data = glob(data_path)
       if len(self.data) == 0:
         raise Exception("[!] No data found in '" + data_path + "'")
@@ -204,7 +204,7 @@ class DCGAN(object):
         batch_idxs = min(len(self.data_X), config.train_size) // config.batch_size
       else:      
         self.data = glob(os.path.join(
-          config.data_dir, config.dataset, self.input_fname_pattern))
+          config.data_dir, config.dataset, "*", self.input_fname_pattern))
         np.random.shuffle(self.data)
         batch_idxs = min(len(self.data), config.train_size) // config.batch_size
 
