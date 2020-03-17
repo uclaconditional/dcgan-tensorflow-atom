@@ -1,24 +1,19 @@
-# DCGAN for MI_REAS
+## Generation mode for REAS_MI
+The python code for generating images is the same with starting training (`main.py`.) The images are generated in directory specified by `--sample_dir` option. More on that below.  
 
-## Commands:  
+### Note on models
+Trained models are located in directory `DCGAN-tensorflow/checkpoints`.
 
-### To train:
-#### Example command:
-In root directory of DCGAN,
-```
-python main.py --dataset=Frames-all-scaleTranslate --data_dir=/media/conditionalstudio/REAS_MI_2/Persona --input_fname_pattern="Persona-*.jpg" --input_height=128 --input_width=128 --batch_size=16 --crop --output_height=128 --output_width=128 --train
-```
-#### The command does:
-Trains DCGAN with images in "/media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate" that fits format "Persona-*.jpg" with dimension 128x128 to 128x128. It processes 16 images per iteration.
-#### Options:
+### Generating video with DCGAN
+#### `main.py` options
 ##### --dataset :
-Name of the directory (not path to that directory) that contains the images to train on.  
+Name of the directory (not path to that directory) that contains the images to train on. This option needs to be defined also when in generating images after training. It should be the directory that contains the images the model was originally trained on.
 e.g. "--dataset=Frames-all-scaleTranslate" if the images are in /media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate.
 ##### --data_dir :
-Path to the directory that contains the images to train on.  
+Path to the directory that contains the images to train on.  Same as `—-dataset` this option should be defined when generating images.
 e.g. "--data_dir=/media/conditionalstudio/REAS_MI_2/Persona" if the images are in /media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate.
 ##### --input_fname_pattern :
-Format of the input images.
+Format of the input images. Same as above, this option needs to be defined when generating images after training.
 ```
 --input_fname_pattern="Persona*.jpg"
 ```
@@ -32,22 +27,25 @@ e.g. --output_width=64
 Directory that samples generated during training are saved. If not supplied, by default saves in <DCGAN_root>/samples.
 ##### --batch_size :
 Number of images to process per iteration. The higher the number the faster the training. It depends on memory size of the GPU. With 64x64 to 64x64 default batch_size should be fine. With 128x128 to 128x128 batch_size 16 is the fastest we can do on Zotac.
-
-
-### To generate:
-#### Example command:
+##### --gen_json :
+Path to the json file that defines the order and parameters of consecutive cuts. More on that below.
+##### Example command:
 In root directory of DCGAN, 
 ```
-python main.py --dataset=Frames-all-scaleTranslate-mag2 --data_dir=/media/conditionalstudio/REAS_MI_2/Persona --input_fname_pattern="Persona-*.jpg" --input_height=128 --input_width=128 --batch_size=16 --crop --output_height=128 --output_width=128 --sample_dir=samples/test-interp --gen_json=test_config.json
+python main.py --dataset=Frames-all-scaleTranslate-mag2 --data_dir=/media/conditionalstudio/REAS_MI_2/Persona --input_fname_pattern="Persona-*.jpg" --input_height=128 --input_width=128 --batch_size=16 --crop --output_height=128 --output_width=128 --checkpoint_name="DCGAN.model-183502" --generation_mode=1
 ```
-#### The command does:
-Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate-mag2" with dimension 128x128 to 128x128, as defined by "test_config.json".
+##### The commands does:
+Loads trained model "DCGAN.model-183502" of training of images in "/media/conditionalstudio/REAS_MI_2/Persona/Frames-all-scaleTranslate-mag2" with dimension 128x128 to 128x128. Generate output defined as mode 1 (more on that below).
 
-#### Example JSON file format:
+### Generating video with consecutive cuts with DCGAN
+The command above in conjunction with `--gen_json` can be used to provide parameters for videos with multiple cuts.
+
+### Example JSON file format
 ```
 {
                 "trained_model" : "checkpoint/Contempt_Export_DCGAN_128_16_128_128/DCGAN.model-192501",
                 "base_dir" : "samples/UntitledFilmStills-Contempt-source",
+                "rand_seed" : 1234,
                 "data" : [
                                 { "mode_num" : 1,
                                  "mode_data" : [["RandGen_20180918-181322_00119", "RandGen_20180918-181322_00233", 48],
@@ -71,11 +69,12 @@ Generate frames with training "/media/conditionalstudio/REAS_MI_2/Persona/Frames
                 ]
 }
 ```
+
 ### Mode descriptions
 #### Mode 1:
-Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a pair of frames. (For e.g. From frame A to frame B, then from frame C to frame D). Slerp is generally smoother than 'lerp'.
+Use spherical linear interpolation, slerp (implementation by Tom White [https://github.com/soumith/dcgan.torch/issues/14](https://github.com/soumith/dcgan.torch/issues/14) ), to interpolate between a pair of frames. (For e.g. From frame A to frame B, then from frame C to frame D). Slerp is generally smoother than ‘lerp’.
 #### Mode 2:
-Use spherical linear interpolation, slerp (implementation by Tom White https://github.com/soumith/dcgan.torch/issues/14), to interpolate between a sequence of frames. (For e.g. From frame A to frame B to frame C to frame D). Slerp is generally smoother than 'lerp'.
+Use spherical linear interpolation, slerp (implementation by Tom White [https://github.com/soumith/dcgan.torch/issues/14](https://github.com/soumith/dcgan.torch/issues/14) ), to interpolate between a sequence of frames. (For e.g. From frame A to frame B to frame C to frame D). Slerp is generally smoother than ‘lerp’.
 #### Mode 3:
 Displace each of the 100 numbers with sine waves. While the amplitude and the frequency across all the numbers are the same, their phase differ and is randomly generated. This phase difference is eased in to create a continuous animation from the starting image.
 #### Mode 4:
@@ -84,30 +83,38 @@ Randomly walk around the latent space. If any of the 100 numbers reach the bound
 Randomly walk around the latent space. If any of the 100 numbers reach the boundary of the space, clamp it at the boundary.
 #### Mode 6:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
+#### Mode 7:
+NOTE: MISSING. Should be:
+Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D), but wrap around the boundary if wrap distance is shorter than regular interpolation distance.
 #### Mode 8:
 Randomly jump around the space within a certain distance from the starting image. Generates a flicker-like effect.
 #### Mode 9:
 Exponential ease in or ease out when interpolating between two key frames. Easing speed and whether to ease in or out is controlled through json params.
+#### Mode 10:
+NOTE: MISSING. Should be:
+Sinusoidally ease in or out when interpolating between two key frames.
 #### Mode 11:
 Randomly jump around the space within a certain distance from the lerp position from A - B.
 #### Mode 12:
-Exponentially ease in and then out when interpolating between two key frames (A | slow - fast - slow | B). Easing speed is controllable through param "power".
+Exponentially ease in and then out when interpolating between two key frames (A | slow - fast - slow | B). Easing speed is controllable through param “power”.
 #### Mode 13:
-Exponential ease in and then out with flicker.
+Exponential ease in and then out with flicker. Combination of mode 12 and 8.
 #### Mode 14:
-Slerp with flicker.
+Slerp with flicker. Combination of mode 1 and 8.
+#### Mode 15:
+Traverse all latent vectors. Linearly step through each of the 100 latent vectors.
 
-#### JSON file parameters:
+### JSON file global parameters
 ```
-"trained_model" : Path to the trained model to use, relative to DCGAN root directory.
-"base_dir" : Directory to store the new frames generated.
+"base_dir" : Directory where seed JSON files being used in this video is located.
+"trained_model" : Path to trained model to be used for this video.
 "rand_seed" : Random seed to be used to generate this video. "rand_seed" is used per video, not per cut.
-"data" : A JSON list that contains info for each transition.
+"data" : List of JSON objects containing parameters for each cut.
 ```
-Elements of "data":
+### Mode specific parameters:
 ```
 Common:
-"mode_num" : Mode number of current cut/transition.
+"mode_num" : Mode number of current cut.
 
 if mode_num == 1:  # A - B | B - C, slerp
   "mode_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
@@ -118,6 +125,7 @@ if mode_num == 3:  # Sinusoidal oscillation
   "total_frame_num" : Number of total frames to generate for this cut.
   "amplitude" : Amplitude of the sinusoidal motion.
   "speed" : Speed of the sinusoidal motion.
+  NOTE: UNIMPLEMENTED "easing" : Easing factor to control how smoothly the current phase transitions into target phase.
 if mode_num == 4:  # Random walk, wrap
   "start_image" : JSON file name of the starting image.
   "total_frame_num" : Number of total frames to generate for this cut.
@@ -127,7 +135,7 @@ if mode_num == 5:  # Random walk, clamp
   "total_frame_num" : Number of total frames to generate for this cut.
   "max_speed" : Maximum of the random speed.
   "clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
-if mode_num == 6:  # A - B - C, lerp * change to behave like mode 2
+if mode_num == 6:  # A - B - C, lerp
   Same as mode 1.
 if mode_num == 8:  # Flicker
   "start_image" : JSON file name of the starting image.
@@ -151,9 +159,8 @@ if mode_num == 14:  # Slerp + flicker
   "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "max_step" : Maximun step per number from the original frame.
 ```
-
-
-#### Legacy command style:
+---
+### Legacy modes documentation:
 #### Example command:
 In root directory of DCGAN, 
 ```
