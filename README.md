@@ -117,7 +117,7 @@ Common:
 "mode_num" : Mode number of current cut.
 
 if mode_num == 1:  # A - B | B - C, slerp
-  "mode_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
+  "interp_data" : A list of the lists ["nameFrameA", "nameFrameB", number_of_frames_for_interp]
 if mode_num == 2:  # A - B - C, slerp
   Same as mode 1.
 if mode_num == 3:  # Sinusoidal oscillation
