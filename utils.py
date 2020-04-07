@@ -214,7 +214,6 @@ def encode(sess, dcgan, config):
       # else:
       #   sample_inputs = np.array(sample).astype(np.float32)
 
-
 def generate_random_images(sess, dcgan, rand_state, config, base_dir, time_stamp, cut, count):
   num_images = cut["total_frame_num"]
   # print("MEEE image_frame_dim: " + str(image_frame_dim))
@@ -990,6 +989,8 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = wrap_lerp(ratio, z1, z2, cut)
             elif mode_num == 9:
               result_z = exp_ease(ratio, z1, z2, cut)
+            elif mode_num == 10:
+              result_z = sinusoid_ease(ratio, z1, z2, cut)
             elif mode_num == 11:
               result_z = flicker_lerp(ratio, z1, z2, rand_state, cut)
             elif mode_num == 12:
