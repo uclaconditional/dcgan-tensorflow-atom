@@ -9,6 +9,7 @@ from six.moves import xrange
 
 from ops import *
 from utils import *
+import pdb
 
 def conv_out_size_same(size, stride):
   return int(math.ceil(float(size) / float(stride)))

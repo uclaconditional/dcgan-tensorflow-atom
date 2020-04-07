@@ -236,7 +236,9 @@ def generate_random_images(sess, dcgan, rand_state, config, base_dir, time_stamp
         if idx + 1 > num_images:
             return
 
-        save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+        json_file = config.gen_json.split("/")[-1]
+        json_file_name = json_file.split(".")[0]
+        save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
         count += 1
         img_path = config.sample_dir + "/" + save_name + '.png'
         json_path = config.sample_dir + "/" + save_name + '.json'
@@ -445,7 +447,9 @@ def generate_single_value_changes(sess, dcgan, config, base_dir, time_stamp, cut
     for i in range(5):
         for j in range(10):
             # save_name = '{}_{}_{}_{:02d}'.format(time_stamp, change_idx_num, str(5-i), j)
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[saved_idx, :, :, :])
@@ -500,7 +504,9 @@ def generate_sin_cycle_all_100(sess, dcgan, config, base_dir, time_stamp, cut, c
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
             # save_name = 'Sin_cycle_all_100_{}_{:05d}'.format(time_stamp, saved_frame)
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             img_path = config.sample_dir + "/" + save_name + '.png'
             # scipy.misc.imsave(img_path, samples[i, :, :, :])
             print(Fore.CYAN + "MEEE sin cycle all 100 image generated: " + img_path)
@@ -565,7 +571,9 @@ def generate_sin_cycle(sess, dcgan, config, base_dir, time_stamp, cut, count):
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
         for i in range(config.batch_size):
             # save_name = 'Sin_cycle_withJson_{}_{:05d}'.format(time_stamp, saved_frame)
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
@@ -593,13 +601,15 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
     curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
 
     if mode_num == 3:
-        s = cut["max_speed"]
-        a = cut["max_amplitude"]
-        amplitudes = (rand_state.random_sample(start_seed.shape) - 0.5) * 2.0 * a
+        s = cut["speed"]
+        # a = cut["amplitude"]
+        # amplitudes = (rand_state.random_sample(start_seed.shape) - 0.5) * 2.0 * a
         sin_seed = np.zeros(start_seed.shape, dtype=np.float32)
         # offset_seed = (rand_state.random_sample(start_seed.shape) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
         curr_speed = rand_state.random_sample(start_seed.shape) * s
-        curr_seed = start_seed
+        offset_seed = (rand_state.rand(start_seed.shape[0]) - np.float32(0.5)) * np.pi * np.float32(2.0)  # [-pi, pi)
+        curr_phases = np.zeros(start_seed.shape, dtype=np.float32)
+        curr_seed = sin_seed
     elif mode_num == 4 or mode_num == 5:
         curr_seed = start_seed
 
@@ -609,7 +619,7 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
         while batch_idx < config.batch_size:
             batch_seeds[batch_idx] = curr_seed
             if mode_num == 3:
-                sin_seed = sinusoidal_walk(curr_speed, amplitudes, num_queued_images, cut)
+                sin_seed, curr_phases = sinusoidal_walk(offset_seed, num_queued_images, cut, curr_phases)
                 curr_seed = start_seed + sin_seed
             elif mode_num == 4:
                 curr_seed = wrap_walk(start_seed, curr_seed, rand_state, cut)
@@ -623,7 +633,9 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
 
         # Save
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
@@ -634,13 +646,27 @@ def generate_random_walk(sess, dcgan, rand_state, config, base_dir, time_stamp, 
                 return count
     return count
 
-def sinusoidal_walk(curr_speed, amplitudes, t, cut):
+def legacy_sinusoidal_walk(curr_speed, amplitudes, t, cut):
     result = np.zeros(amplitudes.shape, dtype=np.float32)
     for i in range(result.shape[0]):
         # curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
         result[i] = np.float32(curr_speed[i])*t
     result = np.sin(result) * amplitudes[i]
     return result
+
+def sinusoidal_walk(phase_shift, t, cut, curr_phases):
+    amplitude = cut["amplitude"]
+    s = cut["speed"]
+    result = np.zeros(phase_shift.shape, dtype=np.float32)
+    # Mode D vars
+    easing = cut["easing"]
+    # if test_mode == "D":
+    for i in range(result.shape[0]):
+        # result[i] = np.float32(s)*t + phase_shift[i]
+        curr_phases[i] = ((phase_shift[i] - curr_phases[i]) * easing) + curr_phases[i]
+        result[i] = np.float32(s)*t + curr_phases[i]
+    result = np.sin(result) * amplitude
+    return result, curr_phases
 
 def clamp_walk(start_seed, walk_seed, rand_state, cut):
     max_speed = cut["max_speed"]
@@ -751,7 +777,9 @@ def generate_walk_in_latent_space(sess, dcgan, config, base_dir, time_stamp, cut
         samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
 
         for i in range(config.batch_size):
-            save_name = '{}_{}_{}_{:05d}'.format(config.dataset, rand_seed, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, rand_seed, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
@@ -902,7 +930,9 @@ def generate_continuous_random_interps(sess, dcgan, config, base_dir, time_stamp
 
         # Naming
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
@@ -956,6 +986,8 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
               result_z = slerp(ratio, z1, z2)
             elif mode_num == 6:  # Mode 6
               result_z = lerp(ratio, z1, z2)
+            elif mode_num == 7:  # Mode 6
+              result_z = wrap_lerp(ratio, z1, z2, cut)
             elif mode_num == 9:
               result_z = exp_ease(ratio, z1, z2, cut)
             elif mode_num == 11:
@@ -997,7 +1029,9 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
 
         # Naming
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             # TODO: Create timestampt dir
             img_path = config.sample_dir + "/" + save_name + '.png'
@@ -1008,7 +1042,7 @@ def generate_continuous_interps_from_json(sess, dcgan, rand_state, config, base_
                 return count
     return count
 
-def exp_ease(val, low, high, cut):
+def exp_ease(ratio, low, high, cut):
     is_ease_in = cut["is_ease_in"]
     power = cut["power"]
     if is_ease_in:
@@ -1166,7 +1200,9 @@ def generate_flicker(sess, dcgan, rand_state, config, base_dir, time_stamp, cut,
 
         # Save
         for i in range(config.batch_size):
-            save_name = '{}_{}_{:05d}'.format(config.dataset, time_stamp , count)
+            json_file = config.gen_json.split("/")[-1]
+            json_file_name = json_file.split(".")[0]
+            save_name = '{}_{}_{}_{:05d}'.format(json_file_name, config.dataset, time_stamp , count)
             count += 1
             img_path = config.sample_dir + "/" + save_name + '.png'
             scipy.misc.imsave(img_path, samples[i, :, :, :])
@@ -1181,6 +1217,47 @@ def step_flicker(start_seed, rand_state, cut):
     max_step = cut["max_step"]
     rand_offset = (rand_state.rand(start_seed.shape[0]) - np.float32(0.5)) * np.float32(2.0)
     return start_seed + np.float32(max_step) * rand_offset
+
+def wrap_lerp(val, low, high, cut, is_buggy=False):
+    # overflow_buffer = cut["overflow_buffer"]
+    overflow_buffer = 0.0
+    usual_cutoff = cut["usual_cutoff"]
+    inner_dist = np.absolute(high - low)
+    max_dist = np.maximum(np.absolute(high), np.absolute(low))
+    result = np.zeros(low.shape, dtype=np.float32)
+
+    normal_wrap_count = 0
+    for i in range(low.shape[0]):
+        curr_cutoff = usual_cutoff
+        if max_dist[i] > usual_cutoff:
+            outlier_cutoff = max_dist[i] + overflow_buffer
+            curr_cutoff = outlier_cutoff
+            wrap_dist = outlier_cutoff * 2.0 - inner_dist[i]
+        else:
+            wrap_dist = usual_cutoff * 2.0 - inner_dist[i]
+        # val = 1.0  # NOTE: DEBUG
+        if wrap_dist < inner_dist[i]:
+            # Wrap lerp
+            vect_oppo = - (high[i] - low[i]) / np.absolute(high[i] - low[i])
+            curr_lerped = low[i] + vect_oppo * val * wrap_dist
+            # print("bef clamp: " + str(curr_lerped))
+            if curr_lerped > curr_cutoff:
+                old_val = curr_lerped
+                curr_lerped = -curr_cutoff + (curr_lerped - curr_cutoff)
+                print("Wrap " + str(i) + "from: " + str(old_val) + " to " + str(curr_lerped))
+            if curr_lerped < -curr_cutoff:
+                if is_buggy:
+                    curr_lerped = curr_cutoff + (curr_lerped - curr_cutoff)
+                else:
+                    old_val = curr_lerped
+                    curr_lerped = curr_cutoff + (curr_lerped + curr_cutoff)
+                    print("Wrap " + str(i) + "from: " + str(old_val) + " to " + str(curr_lerped))
+            result[i] = curr_lerped
+        else:
+            # lerp
+            result[i] = low[i] + (high[i] - low[i]) * val
+            normal_wrap_count += 1
+    return result
 
 def image_manifold_size(num_images):
   manifold_h = int(np.floor(np.sqrt(num_images)))

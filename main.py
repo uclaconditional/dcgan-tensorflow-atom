@@ -69,6 +69,7 @@ def main(_):
     with open(gen_json_file, 'r') as f:
       config_json = json.load(f)
     cuts = config_json["data"]
+    FLAGS.checkpoint_name = config_json["trained_model"]
   with tf.Session(config=run_config) as sess:
     if FLAGS.dataset == 'mnist':
       dcgan = DCGAN(
@@ -104,8 +105,8 @@ def main(_):
           sample_dir=FLAGS.sample_dir,
           data_dir=FLAGS.data_dir,
         # MEEE ATOM options
-          checkpoint_name=FLAGS.checkpoint_name)
-          # checkpoint_name=config_json["trained_model"])
+          # checkpoint_name=FLAGS.checkpoint_name)
+          checkpoint_name=config_json["trained_model"])
 
     show_all_variables()
 
@@ -152,7 +153,9 @@ def main(_):
           count = generate_random_walk(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 5:  # Random walk, clamp
           count = generate_random_walk(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
-        elif mode == 6:  # A - B - C, lerp with wrap if closer
+        elif mode == 6:  # A - B - C, lerp
+          count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
+        elif mode == 7:  # A - B - C, lerp with wrap if closer
           count = generate_continuous_interps_from_json(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
         elif mode == 8:  # Flicker
           count = generate_flicker(sess, dcgan, rand_state, FLAGS, base_dir, time_stamp, cut, count)
