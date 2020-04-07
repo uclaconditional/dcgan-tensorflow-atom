@@ -84,14 +84,12 @@ Randomly walk around the latent space. If any of the 100 numbers reach the bound
 #### Mode 6:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D)
 #### Mode 7:
-NOTE: MISSING. Should be:
 Linearly interpolate between a sequence of frames (e.g. From frame A to frame B, then from frame C to frame D), but wrap around the boundary if wrap distance is shorter than regular interpolation distance.
 #### Mode 8:
 Randomly jump around the space within a certain distance from the starting image. Generates a flicker-like effect.
 #### Mode 9:
 Exponential ease in or ease out when interpolating between two key frames. Easing speed and whether to ease in or out is controlled through json params.
 #### Mode 10:
-NOTE: MISSING. Should be:
 Sinusoidally ease in or out when interpolating between two key frames.
 #### Mode 11:
 Randomly jump around the space within a certain distance from the lerp position from A - B.
@@ -137,6 +135,10 @@ if mode_num == 5:  # Random walk, clamp
   "clamp_boundary" : Seed value does not exceed the range [-clamp_boundary, clamp_boundary].
 if mode_num == 6:  # A - B - C, lerp
   Same as mode 1.
+if mode_num == 7:  # A - B - C, lerp with wrap if closer
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "usual_cutoff" : Cutoff point for points within range [-usual_cutoff, usual_cutoff]
+  "overflow_buffer" : Cutoff point for points outside range usual_cutoff is [-abs(orig_pos)-overflow, +abs(orig_pos)+overflow]
 if mode_num == 8:  # Flicker
   "start_image" : JSON file name of the starting image.
   "total_frame_num" : Number of total frames to generate for this cut.
@@ -145,6 +147,9 @@ if mode_num == 9:  # Exponential easing in or out
   "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "is_ease_in" : "true" for easing in, "false" for easing out.
   "power" : Exponent of animation. Higher is faster.
+if mode_num == 10: # Sinusoidal easing interp.
+  "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
+  "is_ease_in" : "true" for easing in, "false" for easing out.
 if mode_num == 11:  # Flicker lerp
   "interp_data" : List of lists containing ["seedAjson", "seedBjson", num_frames_to_interp]
   "max_step" : Maximun step per number from the original frame.
