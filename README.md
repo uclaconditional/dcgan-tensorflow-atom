@@ -123,7 +123,7 @@ if mode_num == 3:  # Sinusoidal oscillation
   "total_frame_num" : Number of total frames to generate for this cut.
   "amplitude" : Amplitude of the sinusoidal motion.
   "speed" : Speed of the sinusoidal motion.
-  NOTE: UNIMPLEMENTED "easing" : Easing factor to control how smoothly the current phase transitions into target phase.
+  "easing" : Easing factor to control how smoothly the current phase transitions into target phase.
 if mode_num == 4:  # Random walk, wrap
   "start_image" : JSON file name of the starting image.
   "total_frame_num" : Number of total frames to generate for this cut.
